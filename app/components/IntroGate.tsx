@@ -9,6 +9,7 @@ interface IntroGateProps {
 
 export default function IntroGate({ onUnlock }: IntroGateProps) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const mouseRef = useRef({ x: -1000, y: -1000, targetX: -1000, targetY: -1000 });
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -17,52 +18,107 @@ export default function IntroGate({ onUnlock }: IntroGateProps) {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    // Set canvas dimensions exactly to full screen bounds
+    const scaleFactor = 4; 
     const resizeCanvas = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
+      canvas.width = Math.floor(window.innerWidth / scaleFactor);
+      canvas.height = Math.floor(window.innerHeight / scaleFactor);
     };
     resizeCanvas();
     window.addEventListener('resize', resizeCanvas);
 
-    // Character loop injecting full name parameters into the rain stream
-    const characters = '0123456789ABCDEF//_RICARDO_MOREIRA_SYS_MAPPING_OUTPOST_AUS_';
-    const charArray = characters.split('');
-    const fontSize = 10;
-    const columns = Math.floor(canvas.width / fontSize) + 1;
-    
-    // Tracks the vertical falling coordinates for each text column array
-    const rainDrops: number[] = Array(columns).fill(1);
+    const handleMouseMove = (e: MouseEvent) => {
+      mouseRef.current.targetX = e.clientX / scaleFactor;
+      mouseRef.current.targetY = e.clientY / scaleFactor;
+    };
+    window.addEventListener('mousemove', handleMouseMove);
 
-    const drawMatrix = () => {
-      // faint black opacity background for trail fades
-      ctx.fillStyle = 'rgba(9, 9, 11, 0.08)'; 
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
+    const handleMouseLeave = () => {
+      mouseRef.current.targetX = -1000;
+      mouseRef.current.targetY = -1000;
+    };
+    document.addEventListener('mouseleave', handleMouseLeave);
 
-      // Injects brand red into the falling rain strings
-      ctx.fillStyle = 'rgba(255, 78, 62, 0.12)'; 
-      ctx.font = `bold ${fontSize}px monospace`;
+    const bayerMatrix = [
+      [1, 9, 3, 11],
+      [13, 5, 15, 7],
+      [4, 12, 2, 10],
+      [16, 8, 14, 6]
+    ];
 
-      for (let i = 0; i < rainDrops.length; i++) {
-        const text = charArray[Math.floor(Math.random() * charArray.length)];
-        const x = i * fontSize;
-        const y = rainDrops[i] * fontSize;
+    let time = 0;
 
-        ctx.fillText(text, x, y);
+    const renderDitherWarp = () => {
+      time += 0.012; // Slightly tuned down velocity for cinematic backdrop pacing
 
-        // Randomly resets the drops back to the top viewport frame
-        if (y > canvas.height && Math.random() > 0.985) {
-          rainDrops[i] = 0;
+      const w = canvas.width;
+      const h = canvas.height;
+      if (w === 0 || h === 0) return;
+
+      mouseRef.current.x += (mouseRef.current.targetX - mouseRef.current.x) * 0.1;
+      mouseRef.current.y += (mouseRef.current.targetY - mouseRef.current.y) * 0.1;
+
+      const imgData = ctx.createImageData(w, h);
+      const data = imgData.data;
+
+      for (let y = 0; y < h; y++) {
+        for (let x = 0; x < w; x++) {
+          let lookupX = x;
+          let lookupY = y;
+
+          const dx = x - mouseRef.current.x;
+          const dy = y - mouseRef.current.y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          const maxWarpRadius = 80;
+
+          if (dist < maxWarpRadius && dist > 0) {
+            const force = (maxWarpRadius - dist) / maxWarpRadius;
+            const warpStrength = Math.sin(dist * 0.1 - time * 4) * (20 * force);
+            lookupX += (dx / dist) * warpStrength;
+            lookupY += (dy / dist) * warpStrength;
+          }
+
+          const n1 = Math.sin(lookupX * 0.04 + time) * Math.cos(lookupY * 0.03 + time);
+          const n2 = Math.sin(lookupY * 0.05 - time) * Math.cos(lookupX * 0.02 + time * 0.5);
+          const noiseValue = (n1 + n2 + 2) / 4;
+
+          const matrixX = x % 4;
+          const matrixY = y % 4;
+          const threshold = bayerMatrix[matrixY][matrixX] / 17;
+
+          let r = 0, g = 0, b = 0;
+
+          if (noiseValue > threshold) {
+            if (noiseValue > 0.65) {
+              // Dimmed slightly from raw 255 to lower background noise levels behind your typography
+              r = 210; g = 190; b = 90;
+            } else {
+              r = 210; g = 50;  b = 40;
+            }
+          }
+
+          // INJECTING VIGNETTE PROTECTION: Automatically drops background alpha metrics to zero near the outer edge lines
+          const normY = y / h;
+          const vignette = Math.sin(normY * Math.PI); // Parabolic curve dropping to 0 at top/bottom limits
+
+          const pixelIndex = (x + y * w) * 4;
+          data[pixelIndex]     = r;   
+          data[pixelIndex + 1] = g;   
+          data[pixelIndex + 2] = b;   
+          data[pixelIndex + 3] = Math.floor(255 * vignette * 0.7); // Locked opacity ceiling at 70% max background intensity
         }
-        rainDrops[i]++;
       }
+
+      ctx.putImageData(imgData, 0, 0);
+      requestAnimationFrame(renderDitherWarp);
     };
 
-    const interval = setInterval(drawMatrix, 33); // Anchors fluid frame loops
+    const animFrame = requestAnimationFrame(renderDitherWarp);
 
     return () => {
-      clearInterval(interval);
+      cancelAnimationFrame(animFrame);
       window.removeEventListener('resize', resizeCanvas);
+      window.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseleave', handleMouseLeave);
     };
   }, []);
 
@@ -70,85 +126,81 @@ export default function IntroGate({ onUnlock }: IntroGateProps) {
     <motion.div
       exit={{ 
         y: '-100%', 
-        transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] } 
+        transition: { duration: 0.85, ease: [0.16, 1, 0.3, 1] } 
       }}
-      className="fixed inset-0 z-[100] flex flex-col justify-between bg-[#09090b] text-zinc-50 p-6 md:p-16 select-none overflow-hidden"
+      className="fixed inset-0 z-[100] flex flex-col justify-between bg-[#000000] text-zinc-50 p-8 md:p-20 select-none overflow-hidden"
     >
-      {/* HIGH-PERFORMANCE MATRIX CANVAS ACCENT */}
+      {/* THE BACKDROP LAYER */}
       <canvas 
         ref={canvasRef} 
-        className="absolute inset-0 pointer-events-none w-full h-full mix-blend-screen"
+        className="absolute inset-0 pointer-events-none w-full h-full mix-blend-screen opacity-40 transition-opacity duration-500"
+        style={{ imageRendering: 'pixelated' }}
       />
 
-      {/* Ambient Visual Identity Glows */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 -z-10 h-[600px] w-[600px] rounded-full bg-[#ff4e3e]/5 blur-[150px]" />
+      <div className="absolute inset-0 pointer-events-none opacity-[0.012] mix-blend-overlay bg-repeat bg-[url('data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://w3.org id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.8%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E')]" />
 
-      {/* 1. HEADER LOGISTICS */}
-      <div className="flex justify-between items-start font-mono text-[10px] text-[#ff4e3e] tracking-widest uppercase z-10">
-        <span>// PRE_FLIGHT_MANIFEST</span>
-        <span>[ REVAL_v2.0 ]</span>
+      {/* 1. HEADER */}
+      <div className="flex justify-between items-center font-mono text-[9px] text-zinc-500 tracking-[0.3em] uppercase z-20">
+        <span>RICARDO MOREIRA</span>
+        <span>MELBOURNE / SYDNEY</span>
       </div>
 
-      {/* 2. THE PRE-HERO VISUAL HUB (Now hosting the perfectly centered action anchor) */}
-      <div className="w-full max-w-6xl mx-auto flex flex-col items-center justify-center text-center space-y-12 z-10 my-auto">
+      {/* 2. CORE TYPOGRAPHIC CENTERPIECE (With an absolute contrast guard layout) */}
+      <div className="w-full max-w-4xl mx-auto flex flex-col items-center justify-center text-center z-20 my-auto relative px-8 py-16 bg-[#000000]/80 border border-zinc-900/50 backdrop-blur-xl rounded-3xl shadow-[0_0_80px_rgba(0,0,0,0.9)]">
         
-        {/* Massive Heavy Typography Banner */}
         <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-          className="space-y-4"
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
+          className="space-y-6"
         >
-          <h2 className="font-sans text-5xl sm:text-7xl md:text-[9rem] font-black tracking-tighter uppercase leading-none text-zinc-50">
-            ricardo <span className="text-[#ff4e3e]">moreira .</span>
+          <h2 className="font-sans text-5xl sm:text-7xl md:text-[8rem] font-black tracking-tighter uppercase leading-[0.85] text-zinc-50">
+            ricardo <br />
+            <span className="text-zinc-50">moreira.</span>
           </h2>
           
-          <div className="flex items-center justify-center gap-4 text-zinc-500 font-mono text-[10px] tracking-[0.3em] uppercase">
-            <span>[ cd.01 ]</span>
-            <span className="h-1 w-1 bg-zinc-700 rounded-full" />
-            <span>[ md.02 ]</span>
-            <span className="h-1 w-1 bg-zinc-700 rounded-full" />
-            <span>[ sys.03 ]</span>
+          <div className="flex items-center justify-center gap-4 text-zinc-500 font-mono text-[9px] tracking-[0.4em] uppercase">
+            <span>CREATIVE DIRECTION</span>
+            <span className="h-[1px] w-6 bg-zinc-800" />
+            <span>MOTION ARCHITECTURE</span>
           </div>
         </motion.div>
 
-        {/* Central Operational Statement */}
         <motion.p
-          initial={{ opacity: 0, y: 15 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2, duration: 0.8 }}
-          className="font-mono text-zinc-400 text-[11px] max-w-md uppercase tracking-wider leading-relaxed"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.3, duration: 0.8 }}
+          className="font-sans text-zinc-400 text-xs md:text-sm max-w-md font-light leading-relaxed tracking-wide mt-8"
         >
-          establishing communication links to television broadcast art packages, interactive game prototypes, and custom engineering frameworks.
+          Engineering interactive web environments, television broadcast art packages, and elevated business-as-usual frameworks for national networks.
         </motion.p>
 
-         {/* Centered Trigger Action Button Layout */}
+        {/* HIGH-END BUTTON */}
         <motion.button
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4, duration: 0.6 }}
+          transition={{ delay: 0.5, duration: 0.6 }}
           onClick={onUnlock}
-          whileHover={{ scale: 1.03 }}
-          whileTap={{ scale: 0.97 }}
-          className="font-sans font-black text-xs tracking-[0.25em] bg-[#ffe66c] text-[#09090b] px-12 py-5 rounded-xl shadow-2xl hover:bg-zinc-50 transition-all duration-300 cursor-pointer uppercase block mx-auto border-none outline-none"
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+          className="font-mono text-[10px] tracking-[0.25em] border border-zinc-800 bg-zinc-950 hover:border-zinc-200 text-zinc-300 hover:bg-zinc-50 hover:text-[#09090b] px-12 py-4 rounded-none transition-all duration-300 cursor-pointer uppercase block mx-auto outline-none mt-10 shadow-xl"
         >
           SEE PORTFOLIO
         </motion.button>
       </div>
 
-      {/* 3. BASE BOUNDARY TIMESTAMPS */}
-      <div className="flex flex-col sm:flex-row justify-between items-center border-t border-zinc-900/60 pt-6 gap-4 z-10">
-        <div className="flex items-center gap-3 font-mono text-[10px] text-zinc-600 tracking-wider">
-          <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
-          <span>SIGNAL: LINK_STABLE</span>
-        </div>
-        <span className="font-mono text-[10px] text-zinc-600 tracking-wider hidden sm:inline">
-          © 2026 BROADCAST PIPELINE ENGINEERING
-        </span>
+      {/* 3. BASELINE FOOTER */}
+      <div className="flex justify-between items-center border-t border-zinc-900 pt-6 z-20 text-zinc-600 font-mono text-[9px] tracking-[0.2em] uppercase">
+        <span>LEGIBILITY PIPELINE BUFFER SECURE</span>
+        <span>© 2026 ALL RIGHTS RESERVED</span>
       </div>
     </motion.div>
   );
 }
+
+
+
+
 
 
 
