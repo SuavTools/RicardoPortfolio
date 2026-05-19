@@ -1,43 +1,64 @@
+export interface GalleryAsset {
+  url: string;
+  type: 'video' | 'image';
+}
+
 export interface Project {
   id: string;
   title: string;
-  category: 'Flagship Shows' | 'Motion & BAU' | 'Builds';
+  category: 'Finished Art & Campaigns' | 'Motion Design & End-Boards' | 'Creative Direction & Editing';
   desc: string;
   longDesc: string;
   tags: string[];
-  mediaUrl: string;
+  mediaUrl: string;             
   mediaType: 'video' | 'image';
+  gallery: GalleryAsset[]; // Overgraded to support dynamic mixed media types
 }
 
 export const PROJECTS: Project[] = [
   {
-    id: 'sbs-art-show',
-    title: 'SBS Original Art Show',
-    category: 'Flagship Shows',
-    desc: 'Full creative direction, broadcast brand identity, and packaging.',
-    longDesc: 'Led the comprehensive visual identity for SBS flagship broadcasting frames. This case study blueprints the evolutionary design arc spanning character sketches to final broadcast packaging layouts across national flights.',
-    tags: ['Creative Direction', 'Motion Graphics', 'Broadcast'],
-    mediaUrl: 'https://mixkit.co',
-    mediaType: 'video'
+    id: 'sbs-campaign-art',
+    title: 'SBS Selected Campaign Art',
+    category: 'Finished Art & Campaigns',
+    desc: 'Key asset modifications, show art layouts, and commercial network display campaigns.',
+    longDesc: 'Executed digital campaign assets and show art treatments for major broadcasting titles. Balanced high-density text layout metrics with striking photography style frames to align across multi-platform out-of-home (OOH) digital displays.',
+    tags: ['Key Art Expansion', 'Campaign Layouts', 'Finished Art', 'Asset Control'],
+    mediaUrl: '/media/sbs-campaign.jpg',
+    mediaType: 'image',
+    gallery: [
+      { url: '/media/gallery-01.jpg', type: 'image' },
+      { url: '/media/campaign-process-loop.mp4', type: 'video' }, // Custom video loop sitting right in your layout row!
+      { url: '/media/gallery-03.jpg', type: 'image' }
+    ]
   },
   {
-    id: 'sbs-ideation',
-    title: 'Show Concept Development',
-    category: 'Flagship Shows',
-    desc: 'Pre-production pitch decks and conceptual style frames.',
-    longDesc: 'High-level pre-production ideation asset files. While final pixel artwork was not greenlit for air execution, this project tracks structural type design and graphic direction used to lock down executive approvals.',
-    tags: ['Ideation', 'Style Frames', 'Concept Art'],
-    mediaUrl: 'https://unsplash.com',
-    mediaType: 'image'
+    id: 'sbs-motion-endboards',
+    title: 'SBS Network Broadcast Motion Packages',
+    category: 'Motion Design & End-Boards',
+    desc: 'Promotional packaging elements, on-air network assets, and end-board variations.',
+    longDesc: 'Developed dynamic animated end-boards and on-air motion packages across national television flights. Handled swift workflow iterations to enforce strict technical design guidelines while keeping text visibility perfectly sharp on screen.',
+    tags: ['Motion Design', 'On-Air End-Boards', 'Broadcast Graphics', 'Kinetic Type'],
+    mediaUrl: '/media/sbs-endboard.mp4',
+    mediaType: 'video',
+    gallery: [
+      { url: '/media/endboard-process-01.jpg', type: 'image' },
+      { url: '/media/endboard-reel-02.mp4', type: 'video' }
+    ]
   },
   {
-    id: 'elevated-bau',
-    title: 'Elevated Motion BAU Portfolio',
-    category: 'Motion & BAU',
-    desc: 'High-density kinetic typography assets and social promotional layouts.',
-    longDesc: 'A fast-turnaround catalog indexing business-as-usual asset flights. Re-architected workflow files to enforce an elevated aesthetic rule system while delivering motion pieces under strict weekly layout deadlines.',
-    tags: ['Kinetic Type', 'Social Layouts', 'BAU Automation'],
-    mediaUrl: 'https://mixkit.co',
-    mediaType: 'video'
+    id: 'music-video-direction',
+    title: 'Self-Directed Editorial Music Clip',
+    category: 'Creative Direction & Editing',
+    desc: 'Comprehensive visual direction, video editing pipeline execution, and post-production flow.',
+    longDesc: 'An independent visual project mapping end-to-end creative execution. Structured the initial look development storyboards, designed text treatments, and cut the full cinematic rhythm matching sound waveforms.',
+    tags: ['Creative Direction', 'Film Editing', 'Color Grading', 'Visual Continuity'],
+    mediaUrl: '/media/music-video.mp4',
+    mediaType: 'video',
+    gallery: [
+      { url: '/media/mv-broll.mp4', type: 'video' },
+      { url: '/media/mv-frame-02.jpg', type: 'image' }
+    ]
   }
 ];
+
+
