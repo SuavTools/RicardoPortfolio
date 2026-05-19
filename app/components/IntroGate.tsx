@@ -142,7 +142,7 @@ export default function IntroGate({ onUnlock }: IntroGateProps) {
       {/* 1. HEADER */}
       <div className="flex justify-between items-center font-mono text-[9px] text-zinc-500 tracking-[0.3em] uppercase z-20">
         <span>RICARDO MOREIRA</span>
-        <span>MELBOURNE / SYDNEY</span>
+        <span>SYDNEY</span>
       </div>
 
       {/* 2. CORE TYPOGRAPHIC CENTERPIECE (With an absolute contrast guard layout) */}
@@ -160,9 +160,9 @@ export default function IntroGate({ onUnlock }: IntroGateProps) {
           </h2>
           
           <div className="flex items-center justify-center gap-4 text-zinc-500 font-mono text-[9px] tracking-[0.4em] uppercase">
-            <span>CREATIVE DIRECTION</span>
+            <span>CREATIVE</span>
             <span className="h-[1px] w-6 bg-zinc-800" />
-            <span>MOTION ARCHITECTURE</span>
+            <span>MOTION</span>
           </div>
         </motion.div>
 
@@ -172,7 +172,7 @@ export default function IntroGate({ onUnlock }: IntroGateProps) {
           transition={{ delay: 0.3, duration: 0.8 }}
           className="font-sans text-zinc-400 text-xs md:text-sm max-w-md font-light leading-relaxed tracking-wide mt-8"
         >
-          Engineering interactive web environments, television broadcast art packages, and elevated business-as-usual frameworks for national networks.
+          Handling television packaging assets, key visual design, and interactive frontend builds. Focus on clean type and functional motion logic.
         </motion.p>
 
         {/* HIGH-END BUTTON */}

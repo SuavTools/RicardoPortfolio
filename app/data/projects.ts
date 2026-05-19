@@ -18,7 +18,7 @@ export interface Project {
 export const PROJECTS: Project[] = [
   {
     id: 'sbs-campaign-art',
-    title: 'SBS Selected Campaign Art',
+    title: 'Finished Art & Campaigns',
     category: 'Finished Art & Campaigns',
     desc: 'Key asset modifications, show art layouts, and commercial network display campaigns.',
     longDesc: 'Executed digital campaign assets and show art treatments for major broadcasting titles. Balanced high-density text layout metrics with striking photography style frames to align across multi-platform out-of-home (OOH) digital displays.',
@@ -33,7 +33,7 @@ export const PROJECTS: Project[] = [
   },
   {
     id: 'sbs-motion-endboards',
-    title: 'SBS Network Broadcast Motion Packages',
+    title: 'Motion Design',
     category: 'Motion Design & End-Boards',
     desc: 'Promotional packaging elements, on-air network assets, and end-board variations.',
     longDesc: 'Developed dynamic animated end-boards and on-air motion packages across national television flights. Handled swift workflow iterations to enforce strict technical design guidelines while keeping text visibility perfectly sharp on screen.',
@@ -47,7 +47,7 @@ export const PROJECTS: Project[] = [
   },
   {
     id: 'music-video-direction',
-    title: 'Self-Directed Editorial Music Clip',
+    title: 'Creative Direction Music Clip',
     category: 'Creative Direction & Editing',
     desc: 'Comprehensive visual direction, video editing pipeline execution, and post-production flow.',
     longDesc: 'An independent visual project mapping end-to-end creative execution. Structured the initial look development storyboards, designed text treatments, and cut the full cinematic rhythm matching sound waveforms.',
@@ -60,5 +60,6 @@ export const PROJECTS: Project[] = [
     ]
   }
 ];
+
 
 

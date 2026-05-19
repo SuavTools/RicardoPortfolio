@@ -26,7 +26,7 @@ export default function HeroSection() {
           
           {/* Stark white baseline — completely replaces the old gray mask */}
           <span className="text-zinc-50 block">
-            direction
+            design
           </span> 
           
           {/* Stark white baseline anchor */}
@@ -37,7 +37,7 @@ export default function HeroSection() {
 
         {/* Crisp Monospace Operational Narrative Subtitle */}
         <p className="font-mono text-xs md:text-sm text-zinc-400 max-w-xl leading-relaxed uppercase tracking-wide">
-          hi, i&apos;m ricardo. engineering interactive web spaces, television broadcast art packages, and elevated business-as-usual frameworks for networks like sbs.
+          hi, i&apos;m ricardo. engineering interactive web spaces, television broadcast art packages, and elevated design for networks like sbs.
         </p>
       </div>
 
