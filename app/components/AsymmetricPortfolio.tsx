@@ -119,14 +119,14 @@ export default function AsymmetricPortfolio() {
                     loop 
                     muted 
                     playsInline 
-                    preload="none" // ⚡ Stops browser streaming lag on initial load
+                    preload="none" 
                     className="h-full w-full object-cover" 
                   />
                 ) : (
                   <img 
                     src={activeProj.mediaUrl} 
                     alt={activeProj.title} 
-                    loading="lazy" // ⚡ Keeps off-screen image threads idle until requested
+                    loading="lazy" 
                     className="h-full w-full object-cover" 
                   />
                 );
@@ -193,9 +193,21 @@ export default function AsymmetricPortfolio() {
                         <ZoomIn className="text-zinc-100 h-6 w-6 transform scale-75 group-hover/item:scale-100 transition-transform duration-300" />
                       </div>
                       {selected.mediaType === 'video' ? (
-                        <video src={selected.mediaUrl} autoPlay loop muted playsInline preload="none" className="w-full h-full object-cover" />
+                        <video 
+                          src={selected.mediaUrl} 
+                          loop 
+                          muted 
+                          playsInline 
+                          preload="metadata" // ⚡ Fetch lightweight sizing stats only
+                          className="w-full h-full object-cover" 
+                        />
                       ) : (
-                        <img src={selected.mediaUrl} alt={selected.title} loading="lazy" className="w-full h-full object-cover" />
+                        <img 
+                          src={selected.mediaUrl} 
+                          alt={selected.title} 
+                          loading="lazy" 
+                          className="w-full h-full object-cover" 
+                        />
                       )}
                     </div>
                   )}
@@ -214,9 +226,21 @@ export default function AsymmetricPortfolio() {
                         <ZoomIn className="text-zinc-100 h-6 w-6 transform scale-75 group-hover/item:scale-100 transition-transform duration-300" />
                       </div>
                       {item.type === 'video' ? (
-                        <video src={item.url} autoPlay loop muted playsInline preload="none" className="w-full h-full object-cover" />
+                        <video 
+                          src={item.url} 
+                          loop 
+                          muted 
+                          playsInline 
+                          preload="metadata" // ⚡ Stripped autoPlay so it won't choke your network channels
+                          className="w-full h-full object-cover" 
+                        />
                       ) : (
-                        <img src={item.url} alt={`Asset ${i}`} loading="lazy" className="w-full h-full object-cover" />
+                        <img 
+                          src={item.url} 
+                          alt={`Asset ${i}`} 
+                          loading="lazy" 
+                          className="w-full h-full object-cover" 
+                        />
                       )}
                     </div>
                   ))}
@@ -257,6 +281,7 @@ export default function AsymmetricPortfolio() {
     </section>
   );
 }
+
 
 
 

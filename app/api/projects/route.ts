@@ -31,7 +31,7 @@ export async function GET() {
     // 1. Instantly read all cloud media elements over the edge network
     const { blobs } = await list();
     
-    // ⚡ EXACT CASE-SENSITIVE DASHBOARD MATCHING
+    // EXACT CASE-SENSITIVE DASHBOARD MATCHING
     const folderMapping = [
       { id: 'sbs-campaign-art', folderName: 'Selected Campaign Art' },
       { id: 'sbs-motion-endboards', folderName: 'Motion Design' },
@@ -41,8 +41,11 @@ export async function GET() {
     const compiledProjects = folderMapping.map(({ id, folderName }) => {
       const meta = CATEGORY_MAP[id];
 
-      // 2. Filter file elements matching your exact dashboard virtual pathnames
-      const projectFiles = blobs.filter(blob => blob.pathname.startsWith(`${folderName}/`));
+      // 2. Filter files inside folder namespace prefix, stripping out the empty root folder placeholder
+      const projectFiles = blobs.filter(blob => 
+        blob.pathname.startsWith(`${folderName}/`) && 
+        blob.pathname !== `${folderName}/`
+      );
 
       // 3. Scan the folder contents for your designated main teaser tile asset (e.g. hero.mp4 or hero.jpg)
       const heroBlob = projectFiles.find(blob => {
@@ -69,7 +72,7 @@ export async function GET() {
         });
 
       return {
-        id, // Keeps your client session tracking logic fully uniform
+        id,
         ...meta,
         mediaUrl,
         mediaType,
@@ -83,5 +86,6 @@ export async function GET() {
     return NextResponse.json({ error: 'FAILED_TO_RESOLVE_LIVE_STORAGE_RELIABLY' }, { status: 500 });
   }
 }
+
 
 
