@@ -118,7 +118,7 @@ export default function AsymmetricPortfolio() {
                 return activeProj.mediaType === 'video' ? (
                   <video 
                     src={activeProj.mediaUrl} 
-                    autoPlay // 🔥 AUTOPLAY ENABLED
+                    autoPlay 
                     loop 
                     muted 
                     playsInline 
@@ -178,6 +178,7 @@ export default function AsymmetricPortfolio() {
                   // CASE_STUDY_PRODUCTION_ASSETS (CLICK ANY MEDIA TO EXPAND / SWIPE HORIZONTALLY →)
                 </div>
                 
+                {/* Fixed structural track flex overflow properties */}
                 <div 
                   className="flex gap-6 overflow-x-auto w-full no-raw-scrollbar snap-x items-center py-4"
                   style={{ WebkitOverflowScrolling: 'touch' }}
@@ -196,9 +197,9 @@ export default function AsymmetricPortfolio() {
                       </div>
                       {selected.mediaType === 'video' ? (
                         <video 
-                          key={`hero-${selected.id}`} 
+                          key={`hero-${selected.id}`} // Enforces fresh tracking mount
                           src={selected.mediaUrl} 
-                          autoPlay // 🔥 AUTOPLAY ENABLED
+                          autoPlay 
                           loop 
                           muted 
                           playsInline 
@@ -214,7 +215,7 @@ export default function AsymmetricPortfolio() {
                   {/* Interior Secondary Gallery Items */}
                   {selected.gallery && selected.gallery.map((item: any, i: number) => (
                     <div
-                      key={`${selected.id}-gallery-${i}`} 
+                      key={`${selected.id}-gallery-${i}`} // Fixed persistent dynamic layout matching keys
                       onClick={() => {
                         setLightboxUrl(item.url);
                         setLightboxType(item.type);
@@ -226,9 +227,9 @@ export default function AsymmetricPortfolio() {
                       </div>
                       {item.type === 'video' ? (
                         <video 
-                          key={`gallery-vid-${selected.id}-${i}`} 
+                          key={`gallery-vid-${selected.id}-${i}`} // Forces video engine context memory validation
                           src={item.url} 
-                          autoPlay // 🔥 AUTOPLAY ENABLED
+                          autoPlay 
                           loop 
                           muted 
                           playsInline 
@@ -277,7 +278,6 @@ export default function AsymmetricPortfolio() {
     </section>
   );
 }
-
 
 
 
