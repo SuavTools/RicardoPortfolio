@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { list } from '@vercel/blob'; // ⚡ Dynamically loops through your live cloud bucket assets
+import { list } from '@vercel/blob';
 
 // Lock down your exact professional career verticals
 const CATEGORY_MAP: Record<string, { title: string; category: 'Finished Art & Campaigns' | 'Motion Design & End-Boards' | 'Creative Direction & Editing'; desc: string; longDesc: string; tags: string[] }> = {
@@ -28,19 +28,23 @@ const CATEGORY_MAP: Record<string, { title: string; category: 'Finished Art & Ca
 
 export async function GET() {
   try {
-    // 1. Fetch all blobs currently stored in your Vercel Blob store over the edge network
+    // 1. Instantly read all cloud media elements over the edge network
     const { blobs } = await list();
     
-    // Explicit folder mapping parameters matching your virtual directories in the dashboard
-    const hardcodedFolderIds = ['sbs-campaign-art', 'sbs-motion-endboards', 'music-video-direction'];
+    // ⚡ EXACT CASE-SENSITIVE DASHBOARD MATCHING
+    const folderMapping = [
+      { id: 'sbs-campaign-art', folderName: 'Selected Campaign Art' },
+      { id: 'sbs-motion-endboards', folderName: 'Motion Design' },
+      { id: 'music-video-direction', folderName: 'Creative Direction Music Clip' }
+    ];
 
-    const compiledProjects = hardcodedFolderIds.map(folderId => {
-      const meta = CATEGORY_MAP[folderId];
+    const compiledProjects = folderMapping.map(({ id, folderName }) => {
+      const meta = CATEGORY_MAP[id];
 
-      // 2. Filter file URLs that are nested inside this folder namespace prefix
-      const projectFiles = blobs.filter(blob => blob.pathname.startsWith(`${folderId}/`));
+      // 2. Filter file elements matching your exact dashboard virtual pathnames
+      const projectFiles = blobs.filter(blob => blob.pathname.startsWith(`${folderName}/`));
 
-      // 3. Scan folder contents for your primary video/image preview tile named "hero"
+      // 3. Scan the folder contents for your designated main teaser tile asset (e.g. hero.mp4 or hero.jpg)
       const heroBlob = projectFiles.find(blob => {
         const fileName = blob.pathname.split('/').pop() || '';
         return fileName.startsWith('hero.');
@@ -49,7 +53,7 @@ export async function GET() {
       const mediaUrl = heroBlob ? heroBlob.url : '';
       const mediaType = heroBlob?.pathname.toLowerCase().endsWith('.mp4') ? ('video' as const) : ('image' as const);
 
-      // 4. Group all remaining assets straight into the inner scrolling drawer gallery track
+      // 4. Capture all other assets inside the folder to dynamically fuel the internal drawer track
       const gallery = projectFiles
         .filter(blob => {
           const fileName = blob.pathname.split('/').pop() || '';
@@ -65,7 +69,7 @@ export async function GET() {
         });
 
       return {
-        id: folderId,
+        id, // Keeps your client session tracking logic fully uniform
         ...meta,
         mediaUrl,
         mediaType,
@@ -75,8 +79,9 @@ export async function GET() {
 
     return NextResponse.json(compiledProjects);
   } catch (error) {
-    console.error('CLOUD_SCAN_INTERNAL_EXCEPTION_CAUGHT', error);
-    return NextResponse.json({ error: 'FAILED_TO_EXECUTE_CLOUD_DIRECTORY_SCAN' }, { status: 500 });
+    console.error('VERCEL_PATH_RESOLUTION_EXCEPTION', error);
+    return NextResponse.json({ error: 'FAILED_TO_RESOLVE_LIVE_STORAGE_RELIABLY' }, { status: 500 });
   }
 }
+
 
