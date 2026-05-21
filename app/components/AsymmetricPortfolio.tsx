@@ -39,7 +39,6 @@ export default function AsymmetricPortfolio() {
     });
   };
 
-  // Explicit unmount handler to forcefully wipe the video node out of browser memory
   const closeLightbox = () => {
     setLightboxUrl(null);
     setLightboxType(null);
@@ -50,6 +49,12 @@ export default function AsymmetricPortfolio() {
       id="projects" 
       className="min-h-screen bg-zinc-950 text-zinc-50 px-4 py-32 md:px-16 lg:px-24 relative select-none"
     >
+      {/* STYLE INJECTION TO STABILIZE DYNAMIC CAROUSELS AND HIDE SCROLLBARS */}
+      <style jsx global>{`
+        .no-raw-scrollbar::-webkit-scrollbar { display: none !important; }
+        .no-raw-scrollbar { -ms-overflow-style: none !important; scrollbar-width: none !important; }
+      `}</style>
+
       {/* 1. INTRO HEADER */}
       <div className="max-w-7xl mx-auto mb-20">
         <div className="space-y-2">
@@ -72,7 +77,6 @@ export default function AsymmetricPortfolio() {
               onClick={() => setSelected(project)}
               className="group relative flex flex-col md:flex-row md:items-center justify-between py-12 border-b border-zinc-900 cursor-pointer transition-colors duration-300 hover:border-zinc-700"
             >
-              {/* Left Column: Index Number + Full-Width Headings */}
               <div className="flex items-baseline gap-6 md:gap-12 z-10">
                 <span className="font-mono text-xs text-zinc-600 group-hover:text-[#ff4e3e] transition-colors duration-300">
                   [0{idx + 1}]
@@ -82,7 +86,6 @@ export default function AsymmetricPortfolio() {
                 </h3>
               </div>
 
-              {/* Right Column: Meta Category Badges */}
               <div className="flex items-center justify-between md:justify-end gap-8 mt-4 md:mt-0 z-10 pl-14 md:pl-0">
                 <span className="font-mono text-[10px] uppercase tracking-widest bg-zinc-900 border border-zinc-800 text-zinc-500 px-2.5 py-1 rounded">
                   {project.category}
@@ -175,9 +178,10 @@ export default function AsymmetricPortfolio() {
                   // CASE_STUDY_PRODUCTION_ASSETS (CLICK ANY MEDIA TO EXPAND / SWIPE HORIZONTALLY →)
                 </div>
                 
+                {/* Fixed structural track flex overflow properties */}
                 <div 
-                  className="flex gap-6 overflow-x-auto w-full h-[280px] md:h-[420px] pb-4 scrollbar-hide snap-x"
-                  style={{ scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch' }}
+                  className="flex gap-6 overflow-x-auto w-full no-raw-scrollbar snap-x items-center py-4"
+                  style={{ WebkitOverflowScrolling: 'touch' }}
                 >
                   {/* Primary Feature Hero Block */}
                   {selected.mediaUrl && (
@@ -186,13 +190,14 @@ export default function AsymmetricPortfolio() {
                         setLightboxUrl(selected.mediaUrl);
                         setLightboxType(selected.mediaType);
                       }}
-                      className="relative h-full aspect-video flex-shrink-0 bg-zinc-900 rounded-xl overflow-hidden border border-zinc-900 cursor-zoom-in group/item snap-start"
+                      className="relative aspect-video flex-shrink-0 w-[290px] sm:w-[450px] md:w-[600px] bg-zinc-900 rounded-xl overflow-hidden border border-zinc-900 cursor-zoom-in group/item snap-start shadow-xl"
                     >
                       <div className="absolute inset-0 bg-zinc-950/40 opacity-0 group-hover/item:opacity-100 transition-opacity z-10 flex items-center justify-center">
                         <ZoomIn className="text-zinc-100 h-6 w-6 transform scale-75 group-hover/item:scale-100 transition-transform duration-300" />
                       </div>
                       {selected.mediaType === 'video' ? (
                         <video 
+                          key={`hero-${selected.id}`} // Enforces fresh tracking mount
                           src={selected.mediaUrl} 
                           autoPlay 
                           loop 
@@ -210,18 +215,19 @@ export default function AsymmetricPortfolio() {
                   {/* Interior Secondary Gallery Items */}
                   {selected.gallery && selected.gallery.map((item: any, i: number) => (
                     <div
-                      key={i}
+                      key={`${selected.id}-gallery-${i}`} // Fixed persistent dynamic layout matching keys
                       onClick={() => {
                         setLightboxUrl(item.url);
                         setLightboxType(item.type);
                       }}
-                      className="relative h-full aspect-video flex-shrink-0 bg-zinc-900 rounded-xl overflow-hidden border border-zinc-900 cursor-zoom-in group/item snap-start"
+                      className="relative aspect-video flex-shrink-0 w-[290px] sm:w-[450px] md:w-[600px] bg-zinc-900 rounded-xl overflow-hidden border border-zinc-900 cursor-zoom-in group/item snap-start shadow-xl"
                     >
                       <div className="absolute inset-0 bg-zinc-950/40 opacity-0 group-hover/item:opacity-100 transition-opacity z-10 flex items-center justify-center">
                         <ZoomIn className="text-zinc-100 h-6 w-6 transform scale-75 group-hover/item:scale-100 transition-transform duration-300" />
                       </div>
                       {item.type === 'video' ? (
                         <video 
+                          key={`gallery-vid-${selected.id}-${i}`} // Forces video engine context memory validation
                           src={item.url} 
                           autoPlay 
                           loop 
