@@ -113,9 +113,22 @@ export default function AsymmetricPortfolio() {
                 const activeProj = projects.find(p => p.id === hoveredId);
                 if (!activeProj || !activeProj.mediaUrl) return null;
                 return activeProj.mediaType === 'video' ? (
-                  <video src={activeProj.mediaUrl} autoPlay loop muted playsInline className="h-full w-full object-cover" />
+                  <video 
+                    src={activeProj.mediaUrl} 
+                    autoPlay 
+                    loop 
+                    muted 
+                    playsInline 
+                    preload="none" // ⚡ Stops browser streaming lag on initial load
+                    className="h-full w-full object-cover" 
+                  />
                 ) : (
-                  <img src={activeProj.mediaUrl} alt={activeProj.title} className="h-full w-full object-cover" />
+                  <img 
+                    src={activeProj.mediaUrl} 
+                    alt={activeProj.title} 
+                    loading="lazy" // ⚡ Keeps off-screen image threads idle until requested
+                    className="h-full w-full object-cover" 
+                  />
                 );
               })()}
             </motion.div>
@@ -167,124 +180,84 @@ export default function AsymmetricPortfolio() {
                   className="flex gap-6 overflow-x-auto w-full h-[280px] md:h-[420px] pb-4 scrollbar-hide snap-x"
                   style={{ scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch' }}
                 >
-                  {/* Primary Feature Hero Block (Expandable Open Controls) */}
+                  {/* Primary Feature Hero Block */}
                   {selected.mediaUrl && (
                     <div 
                       onClick={() => {
                         setLightboxUrl(selected.mediaUrl);
                         setLightboxType(selected.mediaType);
                       }}
-                      className="w-[360px] md:w-[640px] h-full bg-zinc-900 border border-zinc-900 rounded-2xl overflow-hidden shrink-0 snap-start shadow-2xl relative group/hero cursor-zoom-in"
+                      className="relative h-full aspect-video flex-shrink-0 bg-zinc-900 rounded-xl overflow-hidden border border-zinc-900 cursor-zoom-in group/item snap-start"
                     >
+                      <div className="absolute inset-0 bg-zinc-950/40 opacity-0 group-hover/item:opacity-100 transition-opacity z-10 flex items-center justify-center">
+                        <ZoomIn className="text-zinc-100 h-6 w-6 transform scale-75 group-hover/item:scale-100 transition-transform duration-300" />
+                      </div>
                       {selected.mediaType === 'video' ? (
-                        <>
-                          <video src={selected.mediaUrl} autoPlay loop muted playsInline className="h-full w-full object-cover" />
-                          <div className="absolute inset-0 bg-black/40 opacity-0 group-hover/hero:opacity-100 flex items-center justify-center transition-opacity duration-300"><ZoomIn className="h-6 w-6 text-zinc-100" /></div>
-                        </>
+                        <video src={selected.mediaUrl} autoPlay loop muted playsInline preload="none" className="w-full h-full object-cover" />
                       ) : (
-                        <>
-                          <img src={selected.mediaUrl} alt={selected.title} className="h-full w-full object-cover" />
-                          <div className="absolute inset-0 bg-black/40 opacity-0 group-hover/hero:opacity-100 flex items-center justify-center transition-opacity duration-300"><ZoomIn className="h-6 w-6 text-zinc-100" /></div>
-                        </>
+                        <img src={selected.mediaUrl} alt={selected.title} loading="lazy" className="w-full h-full object-cover" />
                       )}
                     </div>
                   )}
 
-                  {/* Fully Automatic Map: Compiles layout directly from active local folder arrays */}
-                  {selected.gallery && selected.gallery.map((asset: any, assetIdx: number) => (
-                    <div 
-                      key={assetIdx}
+                  {/* Interior Secondary Gallery Items */}
+                  {selected.gallery && selected.gallery.map((item: any, i: number) => (
+                    <div
+                      key={i}
                       onClick={() => {
-                        setLightboxUrl(asset.url);
-                        setLightboxType(asset.type);
+                        setLightboxUrl(item.url);
+                        setLightboxType(item.type);
                       }}
-                      className="w-[360px] md:w-[640px] h-full bg-zinc-900 border border-zinc-900 rounded-2xl overflow-hidden shrink-0 snap-start relative flex flex-col justify-between p-4 group/asset shadow-2xl cursor-zoom-in"
+                      className="relative h-full aspect-video flex-shrink-0 bg-zinc-900 rounded-xl overflow-hidden border border-zinc-900 cursor-zoom-in group/item snap-start"
                     >
-                      {asset.type === 'video' ? (
-                        <>
-                          <video src={asset.url} autoPlay loop muted playsInline className="absolute inset-0 h-full w-full object-cover opacity-85 group-hover/asset:scale-[1.01] transition-transform duration-500" />
-                          <div className="absolute inset-0 bg-black/30 opacity-0 group-hover/asset:opacity-100 flex items-center justify-center transition-opacity duration-300"><ZoomIn className="h-6 w-6 text-zinc-100" /></div>
-                        </>
+                      <div className="absolute inset-0 bg-zinc-950/40 opacity-0 group-hover/item:opacity-100 transition-opacity z-10 flex items-center justify-center">
+                        <ZoomIn className="text-zinc-100 h-6 w-6 transform scale-75 group-hover/item:scale-100 transition-transform duration-300" />
+                      </div>
+                      {item.type === 'video' ? (
+                        <video src={item.url} autoPlay loop muted playsInline preload="none" className="w-full h-full object-cover" />
                       ) : (
-                        <>
-                          <img src={asset.url} alt={`Production slide frame ${assetIdx + 1}`} className="absolute inset-0 h-full w-full object-cover opacity-85 group-hover/asset:scale-[1.01] transition-transform duration-500" />
-                          <div className="absolute inset-0 bg-black/20 opacity-0 group-hover/asset:opacity-100 flex items-center justify-center transition-opacity duration-300"><ZoomIn className="h-6 w-6 text-zinc-100" /></div>
-                        </>
+                        <img src={item.url} alt={`Asset ${i}`} loading="lazy" className="w-full h-full object-cover" />
                       )}
-                      
-                      <div className="absolute inset-0 bg-gradient-to-t from-zinc-950/80 via-transparent to-transparent pointer-events-none" />
-                      <span className="z-10 font-mono text-[8px] text-zinc-400 bg-zinc-950/80 px-2.5 py-1 rounded w-fit border border-zinc-900 uppercase tracking-wider">
-                        //_{asset.type.toUpperCase()}_0{assetIdx + 1}
-                      </span>
                     </div>
                   ))}
                 </div>
               </div>
-
-              {/* CASE BASELINE FOOTER METRICS */}
-              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center border-t border-zinc-900 pt-6 gap-4">
-                <div className="flex flex-wrap gap-1.5">
-                  {selected.tags && selected.tags.map((t: string) => (
-                    <span key={t} className="rounded bg-zinc-900 border border-zinc-800 px-2.5 py-0.5 font-mono text-[10px] text-zinc-400 uppercase tracking-wide">
-                      {t}
-                    </span>
-                  ))}
-                </div>
-                <div className="font-mono text-[9px] text-zinc-600 flex justify-between gap-6 shrink-0 w-full sm:w-auto uppercase tracking-wider">
-                  <span>REG_ID: {selected.id.toUpperCase()}</span>
-                  <span>OUTPOST: AUS_SYS_OK</span>
-                </div>
-              </div>
-
             </motion.div>
           </div>
         )}
       </AnimatePresence>
 
-      {/* 4. ISOLATED MIXED-MEDIA LIGHTBOX OVERLAY MASK */}
+      {/* 4. ISOLATED LIGHTBOX CINEMATIC DRAWER VIEW */}
       <AnimatePresence>
-        {lightboxUrl && lightboxType && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={closeLightbox}
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 backdrop-blur-3xl cursor-zoom-out p-4 md:p-12"
-          >
-            {/* Direct type check conditional splitter forcefully destroys loop lifecycle on close unmounts */}
-            {lightboxType === 'video' ? (
-              <motion.video
-                initial={{ scale: 0.95 }}
-                animate={{ scale: 1 }}
-                exit={{ scale: 0.95 }}
-                transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-                src={lightboxUrl}
-                autoPlay
-                loop
-                muted
-                playsInline
-                controls
-                onClick={(e) => e.stopPropagation()} // Keeps video timeline tracking bar hits safe from exit triggers
-                className="max-w-full max-h-full rounded-lg shadow-2xl border border-zinc-900 bg-black"
-              />
-            ) : (
-              <motion.img
-                initial={{ scale: 0.95 }}
-                animate={{ scale: 1 }}
-                exit={{ scale: 0.95 }}
-                transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-                src={lightboxUrl}
-                alt="High resolution active frame"
-                className="max-w-full max-h-full object-contain rounded-lg shadow-2xl border border-zinc-900"
-              />
-            )}
-            <div className="absolute top-6 right-6 font-mono text-[10px] tracking-widest text-zinc-500 uppercase pointer-events-none">[ CLICK OUTSIDE TO CLOSE ]</div>
-          </motion.div>
+        {lightboxUrl && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-zinc-950/95 backdrop-blur-md p-4 md:p-12">
+            <button 
+              onClick={closeLightbox}
+              className="absolute top-6 right-6 z-50 rounded-full bg-zinc-900 border border-zinc-800 p-2 text-zinc-400 hover:text-zinc-50 transition cursor-pointer"
+            >
+              <X className="h-5 w-5" />
+            </button>
+            <div className="absolute inset-0" onClick={closeLightbox} />
+            
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="relative max-w-5xl max-h-full aspect-video w-full rounded-2xl overflow-hidden border border-zinc-900 bg-zinc-950 flex items-center justify-center shadow-2xl"
+            >
+              {lightboxType === 'video' ? (
+                <video src={lightboxUrl} autoPlay controls loop muted playsInline className="w-full h-full object-contain" />
+              ) : (
+                <img src={lightboxUrl} alt="Expanded presentation asset" className="w-full h-full object-contain" />
+              )}
+            </motion.div>
+          </div>
         )}
       </AnimatePresence>
     </section>
   );
 }
+
 
 
 
