@@ -1,9 +1,55 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowUpRight, X, ZoomIn } from 'lucide-react';
 
+/* ==========================================================================
+   ⚡ PERFORMANCE ENGINE: LAZY AUTOPLAY COMPONENT
+   Uses IntersectionObserver to protect network threads while retaining autoplay motion.
+   ========================================================================== */
+function LazyAutoplayVideo({ src }: { src: string }) {
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  useEffect(() => {
+    const videoNode = videoRef.current;
+    if (!videoNode) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          // Element is visible: permit asset download and trigger immediate autoplay
+          setIsLoaded(true);
+          videoNode.play().catch((err) => console.log("Autoplay blocked by browser policy:", err));
+        } else {
+          // Element slid off-screen: pause playback and kill running background render cycles
+          videoNode.pause();
+        }
+      },
+      { threshold: 0.1 } // Triggers when at least 10% of the video box breaks into view
+    );
+
+    observer.observe(videoNode);
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <video
+      ref={videoRef}
+      src={isLoaded ? src : undefined} // 🛑 Completely blocks data transfer until element scrolls onto screen
+      loop
+      muted
+      playsInline
+      preload="none"
+      className="w-full h-full object-cover"
+    />
+  );
+}
+
+/* ==========================================================================
+   🎛️ CORE COMPONENT: ASYMMETRIC PORTFOLIO INDEX
+   ========================================================================== */
 export default function AsymmetricPortfolio() {
   const [projects, setProjects] = useState<any[]>([]);
   const [selected, setSelected] = useState<any | null>(null);
@@ -193,21 +239,9 @@ export default function AsymmetricPortfolio() {
                         <ZoomIn className="text-zinc-100 h-6 w-6 transform scale-75 group-hover/item:scale-100 transition-transform duration-300" />
                       </div>
                       {selected.mediaType === 'video' ? (
-                        <video 
-                          src={selected.mediaUrl} 
-                          loop 
-                          muted 
-                          playsInline 
-                          preload="metadata" // ⚡ Fetch lightweight sizing stats only
-                          className="w-full h-full object-cover" 
-                        />
+                        <LazyAutoplayVideo src={selected.mediaUrl} />
                       ) : (
-                        <img 
-                          src={selected.mediaUrl} 
-                          alt={selected.title} 
-                          loading="lazy" 
-                          className="w-full h-full object-cover" 
-                        />
+                        <img src={selected.mediaUrl} alt={selected.title} loading="lazy" className="w-full h-full object-cover" />
                       )}
                     </div>
                   )}
@@ -226,21 +260,9 @@ export default function AsymmetricPortfolio() {
                         <ZoomIn className="text-zinc-100 h-6 w-6 transform scale-75 group-hover/item:scale-100 transition-transform duration-300" />
                       </div>
                       {item.type === 'video' ? (
-                        <video 
-                          src={item.url} 
-                          loop 
-                          muted 
-                          playsInline 
-                          preload="metadata" // ⚡ Stripped autoPlay so it won't choke your network channels
-                          className="w-full h-full object-cover" 
-                        />
+                        <LazyAutoplayVideo src={item.url} />
                       ) : (
-                        <img 
-                          src={item.url} 
-                          alt={`Asset ${i}`} 
-                          loading="lazy" 
-                          className="w-full h-full object-cover" 
-                        />
+                        <img src={item.url} alt={`Asset ${i}`} loading="lazy" className="w-full h-full object-cover" />
                       )}
                     </div>
                   ))}
@@ -281,6 +303,7 @@ export default function AsymmetricPortfolio() {
     </section>
   );
 }
+
 
 
 
