@@ -15,7 +15,7 @@ export default function BespokeNavbar() {
 
   return (
     <>
-      <header className="fixed top-6 left-0 right-0 z-50 pointer-events-none">
+      <header className="fixed top-0 left-0 right-0 z-50 py-5 bg-zinc-950/80 pointer-events-none">
         <div className="master flex justify-between items-center">
         <Link href="/" className="pointer-events-auto font-sans uppercase tracking-wider text-sm font-bold text-zinc-100">
           Ricardo Moreira

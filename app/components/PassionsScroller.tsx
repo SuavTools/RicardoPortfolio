@@ -89,44 +89,92 @@ export default function PassionsScroller({ linkTo }: { linkTo?: string }) {
       .catch(() => {});
   }, []);
 
-  // Vertical scroll through the tall section drives the sideways movement.
-  // Each panel holds still for a stretch of scroll, then slides to the next.
+  // Vertical scroll through the tall section drives the sideways movement
   const { scrollYProgress } = useScroll({ target: trackRef });
   const count = PASSIONS.length;
-  const hold = 0.2 / (count - 1);
-  const input: number[] = [];
-  const output: string[] = [];
-  for (let i = 0; i < count; i++) {
-    const center = i / (count - 1);
-    const pos = `-${(i * 100) / count}%`;
-    input.push(Math.max(0, center - hold), Math.min(1, center + hold));
-    output.push(pos, pos);
-  }
-  const x = useTransform(scrollYProgress, input, output);
+  const x = useTransform(scrollYProgress, [0, 1], ['0%', `-${((count - 1) / count) * 100}%`]);
 
-  // When scrolling stops inside the gallery, settle on the nearest panel
+  // One scroll gesture = one panel, with an eased glide between them
   useEffect(() => {
-    let timer: ReturnType<typeof setTimeout> | undefined;
+    let animating = false;
+    let lockUntil = 0;
+    let idleTimer: ReturnType<typeof setTimeout> | undefined;
+    let frame = 0;
+
+    const bounds = () => {
+      const el = trackRef.current;
+      if (!el || el.offsetHeight === 0) return null; // hidden on mobile
+      const vh = window.innerHeight;
+      const start = window.scrollY + el.getBoundingClientRect().top;
+      return { vh, start, end: start + el.offsetHeight - vh };
+    };
+
+    const ease = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+
+    const glideTo = (target: number) => {
+      cancelAnimationFrame(frame);
+      const from = window.scrollY;
+      const distance = target - from;
+      if (Math.abs(distance) < 2) return;
+      const duration = 900;
+      const t0 = performance.now();
+      animating = true;
+      const tick = (now: number) => {
+        const t = Math.min(1, (now - t0) / duration);
+        window.scrollTo(0, from + distance * ease(t));
+        if (t < 1) frame = requestAnimationFrame(tick);
+        else {
+          animating = false;
+          lockUntil = performance.now() + 250;
+        }
+      };
+      frame = requestAnimationFrame(tick);
+    };
+
+    const onWheel = (e: WheelEvent) => {
+      const b = bounds();
+      if (!b) return;
+      const y = window.scrollY;
+      const dir = Math.sign(e.deltaY);
+      if (!dir) return;
+      const inside = dir > 0 ? y >= b.start - 1 && y < b.end - 1 : y > b.start + 1 && y <= b.end + 1;
+      if (!inside) return;
+
+      e.preventDefault();
+      const now = performance.now();
+      // Swallow the rest of this gesture (trackpad momentum, fast wheel ticks)
+      if (animating || now < lockUntil) {
+        lockUntil = Math.max(lockUntil, now + 120);
+        return;
+      }
+      const pos = (y - b.start) / b.vh;
+      const next = dir > 0 ? Math.floor(pos + 0.01) + 1 : Math.ceil(pos - 0.01) - 1;
+      const index = Math.max(0, Math.min(count - 1, next));
+      glideTo(b.start + index * b.vh);
+    };
+
+    // Scrollbar, keyboard or touch: settle on the nearest panel once scrolling stops
     const onScroll = () => {
-      clearTimeout(timer);
-      timer = setTimeout(() => {
-        const el = trackRef.current;
-        if (!el || el.offsetHeight === 0) return; // hidden on mobile
-        const vh = window.innerHeight;
-        const start = window.scrollY + el.getBoundingClientRect().top;
-        const end = start + el.offsetHeight - vh;
+      if (animating) return;
+      clearTimeout(idleTimer);
+      idleTimer = setTimeout(() => {
+        const b = bounds();
+        if (!b || animating) return;
         const y = window.scrollY;
-        if (y <= start || y >= end) return;
-        const target = start + Math.round((y - start) / vh) * vh;
-        if (Math.abs(target - y) > 2) window.scrollTo({ top: target, behavior: 'smooth' });
+        if (y <= b.start || y >= b.end) return;
+        glideTo(b.start + Math.round((y - b.start) / b.vh) * b.vh);
       }, 150);
     };
+
+    window.addEventListener('wheel', onWheel, { passive: false });
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => {
-      clearTimeout(timer);
+      cancelAnimationFrame(frame);
+      clearTimeout(idleTimer);
+      window.removeEventListener('wheel', onWheel);
       window.removeEventListener('scroll', onScroll);
     };
-  }, []);
+  }, [count]);
 
   return (
     <div id="about" className="bg-zinc-950 text-zinc-50">
