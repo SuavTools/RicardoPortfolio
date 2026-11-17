@@ -9,9 +9,25 @@ export default function AsymmetricPortfolio() {
   const [hoveredId, setHoveredId] = useState<string | null>(null);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   
-  // Memory-isolated lightbox state managers to kill ghost video streams
-  const [lightboxUrl, setLightboxUrl] = useState<string | null>(null);
-  const [lightboxType, setLightboxType] = useState<'video' | 'image' | null>(null);
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  const galleryItems: { url: string; type: 'video' | 'image' }[] = selected
+    ? [
+        ...(selected.mediaUrl ? [{ url: selected.mediaUrl, type: selected.mediaType }] : []),
+        ...(selected.gallery ?? []),
+      ]
+    : [];
+  const activeItem = galleryItems[activeIndex];
+
+  const step = (dir: number) => {
+    if (galleryItems.length < 2) return;
+    setActiveIndex((i) => (i + dir + galleryItems.length) % galleryItems.length);
+  };
+
+  const openProject = (project: any) => {
+    setActiveIndex(0);
+    setSelected(project);
+  };
 
   // Dynamic directory scanner fetch stream initialization hook
   useEffect(() => {
@@ -29,26 +45,23 @@ export default function AsymmetricPortfolio() {
     loadDynamicMedia();
   }, []);
 
-  // Side drawer: lock page scroll and close on Escape while open
+  // Gallery: lock page scroll; Escape closes, arrow keys step through
+  const galleryCount = galleryItems.length;
   useEffect(() => {
     if (!selected) return;
     const prevOverflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
     const onKey = (e: KeyboardEvent) => {
-      if (e.key !== 'Escape') return;
-      if (lightboxUrl) {
-        setLightboxUrl(null);
-        setLightboxType(null);
-      } else {
-        setSelected(null);
-      }
+      if (e.key === 'Escape') setSelected(null);
+      else if (galleryCount > 1 && e.key === 'ArrowRight') setActiveIndex((i) => (i + 1) % galleryCount);
+      else if (galleryCount > 1 && e.key === 'ArrowLeft') setActiveIndex((i) => (i - 1 + galleryCount) % galleryCount);
     };
     window.addEventListener('keydown', onKey);
     return () => {
       document.body.style.overflow = prevOverflow;
       window.removeEventListener('keydown', onKey);
     };
-  }, [selected, lightboxUrl]);
+  }, [selected, galleryCount]);
 
   // Tracks cursor placement inside row blocks for the floating element
   const handleMouseMove = (e: React.MouseEvent) => {
@@ -57,11 +70,6 @@ export default function AsymmetricPortfolio() {
       x: e.clientX - rect.left,
       y: e.clientY - rect.top,
     });
-  };
-
-  const closeLightbox = () => {
-    setLightboxUrl(null);
-    setLightboxType(null);
   };
 
   return (
@@ -93,7 +101,7 @@ export default function AsymmetricPortfolio() {
             <div
               key={project.id}
               onMouseEnter={() => setHoveredId(project.id)}
-              onClick={() => setSelected(project)}
+              onClick={() => openProject(project)}
               className="group relative flex flex-col md:flex-row md:items-center justify-between py-12 border-b border-zinc-900 cursor-pointer transition-colors duration-300 hover:border-zinc-700"
             >
               <div className="flex items-baseline gap-6 md:gap-12 z-10">
@@ -148,33 +156,30 @@ export default function AsymmetricPortfolio() {
         </AnimatePresence>
       </div>
 
-      {/* 3. SIDE DRAWER PROJECT PANEL */}
+      {/* 3. FULL-SCREEN GALLERY */}
       <AnimatePresence>
         {selected && (
           <motion.div
-            key="drawer-backdrop"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.25 }}
-            className="fixed inset-0 z-50 bg-zinc-950/70 backdrop-blur-sm"
-            onClick={() => setSelected(null)}
-          />
-        )}
-        {selected && (
-          <motion.aside
-            key="drawer-panel"
+            key="gallery"
             role="dialog"
             aria-modal="true"
             aria-label={selected.title}
-            initial={{ x: '100%' }}
-            animate={{ x: 0 }}
-            exit={{ x: '100%' }}
-            transition={{ type: 'spring', damping: 34, stiffness: 260 }}
-            className="fixed top-0 right-0 z-50 h-dvh w-full sm:w-[85vw] md:w-[60vw] lg:w-[48vw] max-w-3xl flex flex-col bg-zinc-950 border-l border-zinc-900 shadow-2xl"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            className="fixed inset-0 z-50 flex flex-col bg-zinc-950 text-zinc-50"
           >
-            {/* Drawer header */}
-            <div className="flex items-center justify-end gap-4 px-6 py-5 md:px-10 border-b border-zinc-900 flex-shrink-0">
+            {/* Top bar */}
+            <div className="flex items-start justify-between gap-6 px-4 py-5 md:px-10 flex-shrink-0">
+              <div className="max-w-2xl space-y-2">
+                <h3 className="font-sans text-xl md:text-2xl font-black tracking-tighter uppercase leading-none">
+                  {selected.title}
+                </h3>
+                <p className="hidden md:block font-sans text-sm text-zinc-400 leading-relaxed">
+                  {selected.longDesc}
+                </p>
+              </div>
               <button
                 onClick={() => setSelected(null)}
                 className="font-sans uppercase tracking-wider text-sm text-zinc-400 hover:text-zinc-50 underline-offset-[6px] hover:underline transition-colors cursor-pointer"
@@ -183,93 +188,76 @@ export default function AsymmetricPortfolio() {
               </button>
             </div>
 
-            {/* Scrollable drawer body */}
-            <div className="flex-1 overflow-y-auto no-raw-scrollbar px-6 py-8 md:px-10 space-y-10">
-              <div className="space-y-4">
-                <h3 className="text-4xl sm:text-5xl font-black tracking-tighter uppercase text-zinc-50 leading-none">
-                  {selected.title}
-                </h3>
-                <p className="text-zinc-400 text-xs md:text-sm leading-relaxed font-light">
-                  {selected.longDesc}
-                </p>
-              </div>
-
-              <div>
-                <div className="flex flex-col gap-6">
-                  {[
-                    ...(selected.mediaUrl ? [{ url: selected.mediaUrl, type: selected.mediaType }] : []),
-                    ...(selected.gallery ?? []),
-                  ].map((item: any, i: number) => (
-                    <div
-                      key={`${selected.id}-asset-${i}`}
-                      onClick={() => {
-                        setLightboxUrl(item.url);
-                        setLightboxType(item.type);
-                      }}
-                      className="relative aspect-video w-full bg-zinc-900 rounded-xl overflow-hidden border border-zinc-900 cursor-zoom-in group/item shadow-xl"
-                    >
-                      {item.type === 'video' ? (
-                        <video
-                          key={`drawer-vid-${selected.id}-${i}`}
-                          src={item.url}
-                          autoPlay
-                          loop
-                          muted
-                          playsInline
-                          preload="auto"
-                          className="w-full h-full object-cover"
-                        />
-                      ) : (
-                        <img src={item.url} alt={`${selected.title} asset ${i + 1}`} className="w-full h-full object-cover" />
-                      )}
-                    </div>
-                  ))}
-                </div>
-              </div>
+            {/* Media */}
+            <div className="relative flex-1 min-h-0 px-4 md:px-10">
+              <AnimatePresence mode="wait" initial={false}>
+                {activeItem && (
+                  <motion.div
+                    key={`${selected.id}-${activeIndex}`}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.2 }}
+                    drag={galleryItems.length > 1 ? 'x' : false}
+                    dragConstraints={{ left: 0, right: 0 }}
+                    dragElastic={0.2}
+                    onDragEnd={(_, info) => {
+                      if (info.offset.x < -60) step(1);
+                      else if (info.offset.x > 60) step(-1);
+                    }}
+                    className="absolute inset-0 mx-4 md:mx-10 flex items-center justify-center"
+                  >
+                    {activeItem.type === 'video' ? (
+                      <video
+                        src={activeItem.url}
+                        autoPlay
+                        loop
+                        muted
+                        playsInline
+                        controls
+                        preload="auto"
+                        className="max-w-full max-h-full object-contain"
+                      />
+                    ) : (
+                      <img
+                        src={activeItem.url}
+                        alt={`${selected.title} ${activeIndex + 1}`}
+                        draggable={false}
+                        className="max-w-full max-h-full object-contain"
+                      />
+                    )}
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
-          </motion.aside>
-        )}
-      </AnimatePresence>
 
-      {/* 4. ISOLATED LIGHTBOX CINEMATIC DRAWER VIEW */}
-      <AnimatePresence>
-        {lightboxUrl && (
-          <div className="fixed inset-0 z-[60] flex items-center justify-center bg-zinc-950/95 backdrop-blur-md p-4 md:p-12">
-            <button
-              onClick={closeLightbox}
-              className="absolute top-6 right-6 z-50 font-sans uppercase tracking-wider text-sm text-zinc-400 hover:text-zinc-50 underline-offset-[6px] hover:underline transition-colors cursor-pointer"
-            >
-              Close
-            </button>
-            <div className="absolute inset-0" onClick={closeLightbox} />
-            
-            <motion.div 
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              className="relative max-w-5xl max-h-full aspect-video w-full rounded-2xl overflow-hidden border border-zinc-900 bg-zinc-950 flex items-center justify-center shadow-2xl"
-            >
-              {lightboxType === 'video' ? (
-                <video src={lightboxUrl} autoPlay controls loop muted playsInline className="w-full h-full object-contain" />
+            {/* Bottom bar */}
+            <div className="flex items-center justify-between px-4 py-5 md:px-10 flex-shrink-0 font-sans uppercase tracking-wider text-sm text-zinc-400">
+              {galleryItems.length > 1 ? (
+                <>
+                  <button
+                    onClick={() => step(-1)}
+                    className="hover:text-zinc-50 underline-offset-[6px] hover:underline transition-colors cursor-pointer"
+                  >
+                    Prev
+                  </button>
+                  <span className="text-zinc-600 tabular-nums">
+                    {activeIndex + 1} / {galleryItems.length}
+                  </span>
+                  <button
+                    onClick={() => step(1)}
+                    className="hover:text-zinc-50 underline-offset-[6px] hover:underline transition-colors cursor-pointer"
+                  >
+                    Next
+                  </button>
+                </>
               ) : (
-                <img src={lightboxUrl} alt="Expanded presentation asset" className="w-full h-full object-contain" />
+                <span />
               )}
-            </motion.div>
-          </div>
+            </div>
+          </motion.div>
         )}
       </AnimatePresence>
     </section>
   );
 }
-
-
-
-
-
-
-
-
-
-
-
-
