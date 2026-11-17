@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 
 export default function AboutPage() {
   return (
-    <main className="bg-zinc-950 overflow-x-hidden antialiased selection:bg-brand-yellow selection:text-zinc-950 relative">
+    <main className="bg-zinc-950 overflow-x-clip antialiased selection:bg-brand-yellow selection:text-zinc-950 relative">
       <BespokeNavbar />
       <AboutPageContent />
       <AboutSection />
