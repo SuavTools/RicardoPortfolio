@@ -42,3 +42,15 @@ body {
   padding-inline: var(--gutter);
   max-width: calc(80rem + var(--gutter) * 2);
 }
+
+/* Every text link: brand yellow, bold, no underline, white on hover */
+@utility link-accent {
+  color: #ffe66c;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+  transition: color 200ms;
+  &:hover {
+    color: #fafafa;
+  }
+}

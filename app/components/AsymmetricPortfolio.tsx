@@ -165,7 +165,7 @@ export default function AsymmetricPortfolio() {
                 </h3>
                 <button
                   onClick={() => setSelected(null)}
-                  className="font-sans uppercase tracking-wider text-sm text-zinc-400 hover:text-zinc-50 underline-offset-[6px] hover:underline transition-colors cursor-pointer"
+                  className="font-sans uppercase tracking-wider text-sm link-accent"
                 >
                   Close
                 </button>
@@ -194,7 +194,7 @@ export default function AsymmetricPortfolio() {
               <div className="mt-20">
                 <button
                   onClick={() => setSelected(null)}
-                  className="font-sans uppercase tracking-wider text-sm text-zinc-400 hover:text-zinc-50 underline-offset-[6px] hover:underline transition-colors cursor-pointer"
+                  className="font-sans uppercase tracking-wider text-sm link-accent"
                 >
                   Back to work
                 </button>

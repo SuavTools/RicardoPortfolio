@@ -17,13 +17,13 @@ export default function BespokeNavbar() {
     <>
       <header className="fixed top-0 left-0 right-0 z-50 py-5 bg-zinc-950/80 pointer-events-none">
         <div className="master flex justify-between items-center">
-        <Link href="/" className="pointer-events-auto font-sans uppercase tracking-wider text-sm font-bold text-zinc-100">
+        <Link href="/" className="pointer-events-auto font-sans uppercase tracking-wider text-sm link-accent">
           Ricardo Moreira
         </Link>
 
         <button
           onClick={() => setIsOpen(true)}
-          className="pointer-events-auto font-sans uppercase tracking-wider text-sm text-zinc-100 underline-offset-[6px] decoration-zinc-500 hover:underline cursor-pointer"
+          className="pointer-events-auto font-sans uppercase tracking-wider text-sm link-accent"
         >
           Menu
         </button>
@@ -44,7 +44,7 @@ export default function BespokeNavbar() {
             <div className="flex items-center justify-end border-b border-zinc-900 pb-6">
               <button
                 onClick={() => setIsOpen(false)}
-                className="font-sans uppercase tracking-wider text-sm text-zinc-400 hover:text-zinc-50 underline-offset-[6px] hover:underline transition-colors cursor-pointer"
+                className="font-sans uppercase tracking-wider text-sm link-accent"
               >
                 Close
               </button>
