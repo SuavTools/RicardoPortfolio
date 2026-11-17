@@ -75,7 +75,7 @@ export default function AsymmetricPortfolio() {
   return (
     <section 
       id="projects" 
-      className="min-h-screen bg-zinc-950 text-zinc-50 px-4 py-32 md:px-16 lg:px-24 relative select-none"
+      className="min-h-screen bg-zinc-950 text-zinc-50 py-32 relative select-none"
     >
       {/* STYLE INJECTION TO STABILIZE DYNAMIC CAROUSELS AND HIDE SCROLLBARS */}
       <style jsx global>{`
@@ -84,7 +84,7 @@ export default function AsymmetricPortfolio() {
       `}</style>
 
       {/* 1. INTRO HEADER */}
-      <div className="max-w-7xl mx-auto mb-20">
+      <div className="master mb-20">
         <div className="space-y-2">
           <h2 className="font-sans text-4xl font-black tracking-tighter sm:text-6xl uppercase">Selected Productions.</h2>
         </div>
@@ -92,11 +92,11 @@ export default function AsymmetricPortfolio() {
 
       {/* 2. THE STRETCHED FULL-WIDTH INDEX GRID */}
       <div 
-        className="relative max-w-7xl mx-auto border-t border-zinc-900"
+        className="relative master"
         onMouseMove={handleMouseMove}
         onMouseLeave={() => setHoveredId(null)}
       >
-        <div className="w-full">
+        <div className="w-full border-t border-zinc-900">
           {projects.map((project, idx) => (
             <div
               key={project.id}
@@ -171,7 +171,7 @@ export default function AsymmetricPortfolio() {
             className="fixed inset-0 z-50 flex flex-col bg-zinc-950 text-zinc-50"
           >
             {/* Top bar */}
-            <div className="flex items-start justify-between gap-6 px-4 py-5 md:px-10 flex-shrink-0">
+            <div className="master flex items-start justify-between gap-6 py-5 flex-shrink-0">
               <div className="max-w-2xl space-y-2">
                 <h3 className="font-sans text-xl md:text-2xl font-black tracking-tighter uppercase leading-none">
                   {selected.title}
@@ -189,7 +189,7 @@ export default function AsymmetricPortfolio() {
             </div>
 
             {/* Media */}
-            <div className="relative flex-1 min-h-0 px-4 md:px-10">
+            <div className="master relative flex-1 min-h-0">
               <AnimatePresence mode="wait" initial={false}>
                 {activeItem && (
                   <motion.div
@@ -205,7 +205,7 @@ export default function AsymmetricPortfolio() {
                       if (info.offset.x < -60) step(1);
                       else if (info.offset.x > 60) step(-1);
                     }}
-                    className="absolute inset-0 mx-4 md:mx-10 flex items-center justify-center"
+                    className="h-full flex items-center justify-center"
                   >
                     {activeItem.type === 'video' ? (
                       <video
@@ -232,7 +232,7 @@ export default function AsymmetricPortfolio() {
             </div>
 
             {/* Bottom bar */}
-            <div className="flex items-center justify-between px-4 py-5 md:px-10 flex-shrink-0 font-sans uppercase tracking-wider text-sm text-zinc-400">
+            <div className="master flex items-center justify-between py-5 flex-shrink-0 font-sans uppercase tracking-wider text-sm text-zinc-400">
               {galleryItems.length > 1 ? (
                 <>
                   <button

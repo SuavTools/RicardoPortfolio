@@ -89,10 +89,44 @@ export default function PassionsScroller({ linkTo }: { linkTo?: string }) {
       .catch(() => {});
   }, []);
 
-  // Vertical scroll through the tall section drives the sideways movement
+  // Vertical scroll through the tall section drives the sideways movement.
+  // Each panel holds still for a stretch of scroll, then slides to the next.
   const { scrollYProgress } = useScroll({ target: trackRef });
   const count = PASSIONS.length;
-  const x = useTransform(scrollYProgress, [0, 1], ['0%', `-${((count - 1) / count) * 100}%`]);
+  const hold = 0.2 / (count - 1);
+  const input: number[] = [];
+  const output: string[] = [];
+  for (let i = 0; i < count; i++) {
+    const center = i / (count - 1);
+    const pos = `-${(i * 100) / count}%`;
+    input.push(Math.max(0, center - hold), Math.min(1, center + hold));
+    output.push(pos, pos);
+  }
+  const x = useTransform(scrollYProgress, input, output);
+
+  // When scrolling stops inside the gallery, settle on the nearest panel
+  useEffect(() => {
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    const onScroll = () => {
+      clearTimeout(timer);
+      timer = setTimeout(() => {
+        const el = trackRef.current;
+        if (!el || el.offsetHeight === 0) return; // hidden on mobile
+        const vh = window.innerHeight;
+        const start = window.scrollY + el.getBoundingClientRect().top;
+        const end = start + el.offsetHeight - vh;
+        const y = window.scrollY;
+        if (y <= start || y >= end) return;
+        const target = start + Math.round((y - start) / vh) * vh;
+        if (Math.abs(target - y) > 2) window.scrollTo({ top: target, behavior: 'smooth' });
+      }, 150);
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener('scroll', onScroll);
+    };
+  }, []);
 
   return (
     <div id="about" className="bg-zinc-950 text-zinc-50">
@@ -101,8 +135,8 @@ export default function PassionsScroller({ linkTo }: { linkTo?: string }) {
         <div className="sticky top-0 h-screen overflow-hidden">
           <motion.div style={{ x, width: `${count * 100}vw` }} className="flex h-full">
             {PASSIONS.map((p, i) => (
-              <div key={p.title} className="w-screen h-full flex-shrink-0 px-16 lg:px-24 flex items-center">
-                <div className="grid grid-cols-2 gap-16 lg:gap-24 items-center w-full max-w-7xl mx-auto">
+              <div key={p.title} className="w-screen h-full flex-shrink-0 flex items-center">
+                <div className="master grid grid-cols-2 gap-16 lg:gap-24 items-center">
                   <PanelText index={i} title={p.title} blurb={p.blurb} />
                   <div className="aspect-[4/5] max-h-[75vh] w-full overflow-hidden">
                     <PanelMedia item={media[i]} alt={p.title} linkTo={linkTo} />
@@ -115,7 +149,7 @@ export default function PassionsScroller({ linkTo }: { linkTo?: string }) {
       </section>
 
       {/* Passions: stacked on mobile */}
-      <section className="md:hidden px-4 pt-32 pb-24 space-y-20">
+      <section className="md:hidden master pt-32 pb-24 space-y-20">
         {PASSIONS.map((p, i) => (
           <div key={p.title} className="space-y-8">
             <PanelText index={i} title={p.title} blurb={p.blurb} />

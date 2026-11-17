@@ -128,7 +128,7 @@ export default function IntroGate({ onUnlock }: IntroGateProps) {
         y: '-100%', 
         transition: { duration: 0.85, ease: [0.16, 1, 0.3, 1] } 
       }}
-      className="fixed inset-0 z-[100] flex flex-col justify-between bg-[#000000] text-zinc-50 p-8 md:p-20 select-none overflow-hidden"
+      className="fixed inset-0 z-[100] flex flex-col justify-between bg-[#000000] text-zinc-50 py-8 md:py-20 select-none overflow-hidden"
     >
       {/* THE BACKDROP LAYER */}
       <canvas 
@@ -138,7 +138,7 @@ export default function IntroGate({ onUnlock }: IntroGateProps) {
       />
 
       {/* 1. HEADER */}
-      <div className="flex justify-between items-center font-sans text-xs text-zinc-500 z-20">
+      <div className="master flex justify-between items-center font-sans text-xs text-zinc-500 z-20">
         <span>Ricardo Moreira</span>
         <span>Sydney</span>
       </div>
@@ -179,7 +179,7 @@ export default function IntroGate({ onUnlock }: IntroGateProps) {
       </div>
 
       {/* 3. BASELINE FOOTER */}
-      <div className="flex justify-end items-center z-20 text-zinc-600 font-sans text-xs">
+      <div className="master flex justify-end items-center z-20 text-zinc-600 font-sans text-xs">
         <span>© 2026</span>
       </div>
     </motion.div>

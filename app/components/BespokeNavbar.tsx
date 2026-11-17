@@ -15,7 +15,8 @@ export default function BespokeNavbar() {
 
   return (
     <>
-      <header className="fixed top-6 left-0 right-0 z-50 flex justify-between items-center px-6 md:px-12 pointer-events-none">
+      <header className="fixed top-6 left-0 right-0 z-50 pointer-events-none">
+        <div className="master flex justify-between items-center">
         <Link href="/" className="pointer-events-auto font-sans uppercase tracking-wider text-sm font-bold text-zinc-100">
           Ricardo Moreira
         </Link>
@@ -26,6 +27,7 @@ export default function BespokeNavbar() {
         >
           Menu
         </button>
+        </div>
       </header>
 
       <AnimatePresence>
@@ -35,8 +37,9 @@ export default function BespokeNavbar() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: '-10%' }}
             transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-            className="fixed inset-0 z-50 flex flex-col justify-between bg-zinc-950 p-8 md:p-24 text-zinc-50 overflow-hidden"
+            className="fixed inset-0 z-50 bg-zinc-950 py-8 md:py-24 text-zinc-50 overflow-hidden"
           >
+            <div className="master h-full flex flex-col justify-between">
 
             <div className="flex items-center justify-end border-b border-zinc-900 pb-6">
               <button
@@ -61,6 +64,7 @@ export default function BespokeNavbar() {
                 </Link>
               ))}
             </nav>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
