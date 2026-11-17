@@ -43,14 +43,14 @@ body {
   max-width: calc(80rem + var(--gutter) * 2);
 }
 
-/* Every text link: brand yellow, bold, no underline, white on hover */
+/* Every text link: white, bold, no underline, brand yellow on hover */
 @utility link-accent {
-  color: #ffe66c;
+  color: #fafafa;
   font-weight: 700;
   text-decoration: none;
   cursor: pointer;
   transition: color 200ms;
   &:hover {
-    color: #fafafa;
+    color: #ffe66c;
   }
 }
