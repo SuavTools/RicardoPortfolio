@@ -1,23 +1,43 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useSyncExternalStore } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import IntroGate from './components/IntroGate';
 import BespokeNavbar from './components/BespokeNavbar';
 import HeroSection from './components/HeroSection';
 import AsymmetricPortfolio from './components/AsymmetricPortfolio';
 import AboutSection from './components/AboutSection';
-import SiteFooter from './components/SiteFooter';
 
 export default function Home() {
-  const [isUnlocked, setIsUnlocked] = useState(false);
+  // Skip the gate if it was already passed this session (e.g. coming back from /about).
+  // Server render returns null so nothing flashes before we know.
+  const gatePassed = useSyncExternalStore(
+    () => () => {},
+    () => {
+      try {
+        return sessionStorage.getItem('gate-passed') === '1';
+      } catch {
+        return false;
+      }
+    },
+    () => null
+  );
+  const [unlockedNow, setUnlockedNow] = useState(false);
+  const isUnlocked = gatePassed === null ? null : gatePassed || unlockedNow;
+
+  const unlock = () => {
+    try {
+      sessionStorage.setItem('gate-passed', '1');
+    } catch {}
+    setUnlockedNow(true);
+  };
 
   return (
     <main className="bg-zinc-950 overflow-x-hidden antialiased selection:bg-brand-yellow selection:text-zinc-950 relative">
       {/* Cinematic Entry Gate Overlay Window */}
       <AnimatePresence mode="wait">
-        {!isUnlocked && (
-          <IntroGate onUnlock={() => setIsUnlocked(true)} />
+        {isUnlocked === false && (
+          <IntroGate onUnlock={unlock} />
         )}
       </AnimatePresence>
 
@@ -35,8 +55,6 @@ export default function Home() {
 
           {/* Deep Asymmetric Profile Narrative Column */}
           <AboutSection />
-
-          <SiteFooter />
         </>
       )}
     </main>

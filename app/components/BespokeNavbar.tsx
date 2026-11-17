@@ -1,11 +1,12 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const NAVIGATION_LINKS = [
-  { index: '01', title: 'Work', href: '#projects' },
-  { index: '02', title: 'About', href: '#about' },
+  { index: '01', title: 'Work', href: '/#projects' },
+  { index: '02', title: 'About', href: '/about' },
 ];
 
 export default function BespokeNavbar() {
@@ -14,9 +15,9 @@ export default function BespokeNavbar() {
   return (
     <>
       <header className="fixed top-6 left-0 right-0 z-50 flex justify-between items-center px-6 md:px-12 pointer-events-none">
-        <a href="#" className="pointer-events-auto font-sans uppercase tracking-wider text-sm font-bold text-zinc-100">
+        <Link href="/" className="pointer-events-auto font-sans uppercase tracking-wider text-sm font-bold text-zinc-100">
           Ricardo Moreira
-        </a>
+        </Link>
 
         <button
           onClick={() => setIsOpen(true)}
@@ -47,7 +48,7 @@ export default function BespokeNavbar() {
 
             <nav className="flex flex-col space-y-6 md:space-y-10 my-auto">
               {NAVIGATION_LINKS.map((link) => (
-                <a
+                <Link
                   key={link.index}
                   href={link.href}
                   onClick={() => setIsOpen(false)}
@@ -56,7 +57,7 @@ export default function BespokeNavbar() {
                   <span className="font-sans text-4xl sm:text-6xl md:text-8xl font-black tracking-tighter uppercase text-zinc-50 transition-transform duration-500 group-hover:text-brand-yellow group-hover:translate-x-6">
                     {link.title}
                   </span>
-                </a>
+                </Link>
               ))}
             </nav>
           </motion.div>
