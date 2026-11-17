@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowUpRight, X, ZoomIn } from 'lucide-react';
 
 export default function AsymmetricPortfolio() {
   const [projects, setProjects] = useState<any[]>([]);
@@ -29,6 +28,27 @@ export default function AsymmetricPortfolio() {
     }
     loadDynamicMedia();
   }, []);
+
+  // Side drawer: lock page scroll and close on Escape while open
+  useEffect(() => {
+    if (!selected) return;
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== 'Escape') return;
+      if (lightboxUrl) {
+        setLightboxUrl(null);
+        setLightboxType(null);
+      } else {
+        setSelected(null);
+      }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => {
+      document.body.style.overflow = prevOverflow;
+      window.removeEventListener('keydown', onKey);
+    };
+  }, [selected, lightboxUrl]);
 
   // Tracks cursor placement inside row blocks for the floating element
   const handleMouseMove = (e: React.MouseEvent) => {
@@ -58,7 +78,6 @@ export default function AsymmetricPortfolio() {
       {/* 1. INTRO HEADER */}
       <div className="max-w-7xl mx-auto mb-20">
         <div className="space-y-2">
-          <span className="font-mono text-[10px] uppercase tracking-widest text-[#ff4e3e]">// EDITORIAL_INDEX_v7.5_STABLE</span>
           <h2 className="font-sans text-4xl font-black tracking-tighter sm:text-6xl uppercase">Selected Productions.</h2>
         </div>
       </div>
@@ -79,20 +98,11 @@ export default function AsymmetricPortfolio() {
             >
               <div className="flex items-baseline gap-6 md:gap-12 z-10">
                 <span className="font-mono text-xs text-zinc-600 group-hover:text-[#ff4e3e] transition-colors duration-300">
-                  [0{idx + 1}]
+                  0{idx + 1}
                 </span>
                 <h3 className="font-sans text-2xl sm:text-4xl md:text-5xl font-black tracking-tighter text-zinc-100 group-hover:text-[#ffe66c] transition-colors duration-300 uppercase">
                   {project.title}
                 </h3>
-              </div>
-
-              <div className="flex items-center justify-between md:justify-end gap-8 mt-4 md:mt-0 z-10 pl-14 md:pl-0">
-                <span className="font-mono text-[10px] uppercase tracking-widest bg-zinc-900 border border-zinc-800 text-zinc-500 px-2.5 py-1 rounded">
-                  {project.category}
-                </span>
-                <div className="rounded-full border border-zinc-800 p-2 bg-zinc-950 text-zinc-500 group-hover:text-zinc-100 group-hover:border-zinc-50 transition-all">
-                  <ArrowUpRight className="h-4 w-4" />
-                </div>
               </div>
             </div>
           ))}
@@ -138,125 +148,98 @@ export default function AsymmetricPortfolio() {
         </AnimatePresence>
       </div>
 
-      {/* 3. FULL-WIDTH PROJECT DISPLAY OVERLAY */}
+      {/* 3. SIDE DRAWER PROJECT PANEL */}
       <AnimatePresence>
         {selected && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-zinc-950/98 backdrop-blur-2xl">
-            <div className="absolute inset-0 -z-10" onClick={() => setSelected(null)} />
-            
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 20 }}
-              transition={{ type: 'spring', damping: 32, stiffness: 220 }}
-              className="relative flex h-screen w-full flex-col bg-zinc-950 overflow-y-auto px-6 py-12 md:px-16 lg:px-24 justify-between"
-            >
-              <button 
-                onClick={() => setSelected(null)} 
-                className="absolute top-8 right-6 md:right-16 lg:right-24 z-30 rounded-full bg-zinc-900 border border-zinc-800 p-2.5 text-zinc-400 hover:text-zinc-50 hover:border-zinc-700 transition cursor-pointer"
+          <motion.div
+            key="drawer-backdrop"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.25 }}
+            className="fixed inset-0 z-50 bg-zinc-950/70 backdrop-blur-sm"
+            onClick={() => setSelected(null)}
+          />
+        )}
+        {selected && (
+          <motion.aside
+            key="drawer-panel"
+            role="dialog"
+            aria-modal="true"
+            aria-label={selected.title}
+            initial={{ x: '100%' }}
+            animate={{ x: 0 }}
+            exit={{ x: '100%' }}
+            transition={{ type: 'spring', damping: 34, stiffness: 260 }}
+            className="fixed top-0 right-0 z-50 h-dvh w-full sm:w-[85vw] md:w-[60vw] lg:w-[48vw] max-w-3xl flex flex-col bg-zinc-950 border-l border-zinc-900 shadow-2xl"
+          >
+            {/* Drawer header */}
+            <div className="flex items-center justify-end gap-4 px-6 py-5 md:px-10 border-b border-zinc-900 flex-shrink-0">
+              <button
+                onClick={() => setSelected(null)}
+                className="font-sans text-sm text-zinc-400 hover:text-zinc-50 underline-offset-[6px] hover:underline transition-colors cursor-pointer"
               >
-                <X className="h-4 w-4" />
+                Close
               </button>
+            </div>
 
-              {/* OVERHEAD CASE DETAILS */}
-              <div className="space-y-4 max-w-4xl pt-8">
-                <span className="inline-block rounded bg-[#ff4e3e]/10 border border-[#ff4e3e]/20 px-2.5 py-0.5 font-mono text-[9px] text-[#ff4e3e] uppercase tracking-widest">
-                  {selected.category}
-                </span>
-                <h3 className="text-4xl sm:text-5xl md:text-7xl font-black tracking-tighter uppercase text-zinc-50 leading-none">
+            {/* Scrollable drawer body */}
+            <div className="flex-1 overflow-y-auto no-raw-scrollbar px-6 py-8 md:px-10 space-y-10">
+              <div className="space-y-4">
+                <h3 className="text-4xl sm:text-5xl font-black tracking-tighter uppercase text-zinc-50 leading-none">
                   {selected.title}
                 </h3>
-                <p className="text-zinc-400 text-xs md:text-sm leading-relaxed max-w-3xl font-light">
+                <p className="text-zinc-400 text-xs md:text-sm leading-relaxed font-light">
                   {selected.longDesc}
                 </p>
               </div>
 
-              {/* EXPANSIVE MULTI-IMAGE SCROLL GALLERY */}
-              <div className="w-full py-8">
-                <div className="font-mono text-[9px] text-zinc-600 uppercase tracking-widest mb-4 flex items-center gap-2">
-                  <span className="h-1.5 w-1.5 rounded-full bg-[#ffe66c] animate-pulse" />
-                  // CASE_STUDY_PRODUCTION_ASSETS (CLICK ANY MEDIA TO EXPAND / SWIPE HORIZONTALLY →)
-                </div>
-                
-                {/* Fixed structural track flex overflow properties */}
-                <div 
-                  className="flex gap-6 overflow-x-auto w-full no-raw-scrollbar snap-x items-center py-4"
-                  style={{ WebkitOverflowScrolling: 'touch' }}
-                >
-                  {/* Primary Feature Hero Block */}
-                  {selected.mediaUrl && (
-                    <div 
-                      onClick={() => {
-                        setLightboxUrl(selected.mediaUrl);
-                        setLightboxType(selected.mediaType);
-                      }}
-                      className="relative aspect-video flex-shrink-0 w-[290px] sm:w-[450px] md:w-[600px] bg-zinc-900 rounded-xl overflow-hidden border border-zinc-900 cursor-zoom-in group/item snap-start shadow-xl"
-                    >
-                      <div className="absolute inset-0 bg-zinc-950/40 opacity-0 group-hover/item:opacity-100 transition-opacity z-10 flex items-center justify-center">
-                        <ZoomIn className="text-zinc-100 h-6 w-6 transform scale-75 group-hover/item:scale-100 transition-transform duration-300" />
-                      </div>
-                      {selected.mediaType === 'video' ? (
-                        <video 
-                          key={`hero-${selected.id}`} // Enforces fresh tracking mount
-                          src={selected.mediaUrl} 
-                          autoPlay 
-                          loop 
-                          muted 
-                          playsInline 
-                          preload="auto" 
-                          className="w-full h-full object-cover" 
-                        />
-                      ) : (
-                        <img src={selected.mediaUrl} alt={selected.title} className="w-full h-full object-cover" />
-                      )}
-                    </div>
-                  )}
-
-                  {/* Interior Secondary Gallery Items */}
-                  {selected.gallery && selected.gallery.map((item: any, i: number) => (
+              <div>
+                <div className="flex flex-col gap-6">
+                  {[
+                    ...(selected.mediaUrl ? [{ url: selected.mediaUrl, type: selected.mediaType }] : []),
+                    ...(selected.gallery ?? []),
+                  ].map((item: any, i: number) => (
                     <div
-                      key={`${selected.id}-gallery-${i}`} // Fixed persistent dynamic layout matching keys
+                      key={`${selected.id}-asset-${i}`}
                       onClick={() => {
                         setLightboxUrl(item.url);
                         setLightboxType(item.type);
                       }}
-                      className="relative aspect-video flex-shrink-0 w-[290px] sm:w-[450px] md:w-[600px] bg-zinc-900 rounded-xl overflow-hidden border border-zinc-900 cursor-zoom-in group/item snap-start shadow-xl"
+                      className="relative aspect-video w-full bg-zinc-900 rounded-xl overflow-hidden border border-zinc-900 cursor-zoom-in group/item shadow-xl"
                     >
-                      <div className="absolute inset-0 bg-zinc-950/40 opacity-0 group-hover/item:opacity-100 transition-opacity z-10 flex items-center justify-center">
-                        <ZoomIn className="text-zinc-100 h-6 w-6 transform scale-75 group-hover/item:scale-100 transition-transform duration-300" />
-                      </div>
                       {item.type === 'video' ? (
-                        <video 
-                          key={`gallery-vid-${selected.id}-${i}`} // Forces video engine context memory validation
-                          src={item.url} 
-                          autoPlay 
-                          loop 
-                          muted 
-                          playsInline 
-                          preload="auto" 
-                          className="w-full h-full object-cover" 
+                        <video
+                          key={`drawer-vid-${selected.id}-${i}`}
+                          src={item.url}
+                          autoPlay
+                          loop
+                          muted
+                          playsInline
+                          preload="auto"
+                          className="w-full h-full object-cover"
                         />
                       ) : (
-                        <img src={item.url} alt={`Asset ${i}`} className="w-full h-full object-cover" />
+                        <img src={item.url} alt={`${selected.title} asset ${i + 1}`} className="w-full h-full object-cover" />
                       )}
                     </div>
                   ))}
                 </div>
               </div>
-            </motion.div>
-          </div>
+            </div>
+          </motion.aside>
         )}
       </AnimatePresence>
 
       {/* 4. ISOLATED LIGHTBOX CINEMATIC DRAWER VIEW */}
       <AnimatePresence>
         {lightboxUrl && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-zinc-950/95 backdrop-blur-md p-4 md:p-12">
-            <button 
+          <div className="fixed inset-0 z-[60] flex items-center justify-center bg-zinc-950/95 backdrop-blur-md p-4 md:p-12">
+            <button
               onClick={closeLightbox}
-              className="absolute top-6 right-6 z-50 rounded-full bg-zinc-900 border border-zinc-800 p-2 text-zinc-400 hover:text-zinc-50 transition cursor-pointer"
+              className="absolute top-6 right-6 z-50 font-sans text-sm text-zinc-400 hover:text-zinc-50 underline-offset-[6px] hover:underline transition-colors cursor-pointer"
             >
-              <X className="h-5 w-5" />
+              Close
             </button>
             <div className="absolute inset-0" onClick={closeLightbox} />
             

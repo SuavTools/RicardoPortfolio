@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { RotateCcw, Keyboard } from 'lucide-react';
 
 interface Invader {
   x: number;
@@ -247,24 +246,21 @@ export default function PlaygroundGame() {
         
         {gameOver && (
           <div className="absolute inset-0 bg-zinc-950/95 flex flex-col items-center justify-center space-y-3">
-            <span className="font-mono text-xs text-[#ff4e3e] tracking-wider uppercase">// INTRUDERS_BREACHED_DEFENSE</span>
             <h3 className="font-sans text-3xl font-black text-zinc-50">DEFENSE CRITICAL</h3>
-            <button onClick={restartAll} className="font-mono text-[10px] tracking-widest bg-[#ffe66c] text-[#09090b] px-6 py-2.5 font-bold rounded transition flex items-center gap-2"><RotateCcw className="h-3 w-3" /> REBOOT_SYSTEM</button>
+            <button onClick={restartAll} className="font-sans text-sm text-zinc-200 underline underline-offset-[6px] decoration-zinc-600 hover:decoration-zinc-100 transition-colors cursor-pointer">Try again</button>
           </div>
         )}
 
         {victory && (
           <div className="absolute inset-0 bg-zinc-950/95 flex flex-col items-center justify-center space-y-3">
-            <span className="font-mono text-xs text-emerald-400 tracking-wider uppercase">// MATRIX_CLEARED_SUCCESSFULLY</span>
             <h3 className="font-sans text-3xl font-black text-[#ffe66c]">VICTORY</h3>
-            <button onClick={restartAll} className="font-mono text-[10px] tracking-widest bg-[#ffe66c] text-[#09090b] px-6 py-2.5 font-bold rounded transition flex items-center gap-2"><RotateCcw className="h-3 w-3" /> LOOP_AGAIN</button>
+            <button onClick={restartAll} className="font-sans text-sm text-zinc-200 underline underline-offset-[6px] decoration-zinc-600 hover:decoration-zinc-100 transition-colors cursor-pointer">Play again</button>
           </div>
         )}
       </div>
 
-      <div className="flex items-center gap-2 font-mono text-[10px] text-zinc-600 tracking-wider uppercase">
-        <Keyboard className="h-3.5 w-3.5 text-zinc-500" />
-        <span>CONTROLS: <span className="text-zinc-400 font-bold">[A/D]</span> OR <span className="text-zinc-400 font-bold">[ARROW_KEYS]</span> TO MOVE // <span className="text-zinc-400 font-bold">[SPACEBAR]</span> TO LASER BLAST</span>
+      <div className="font-sans text-xs text-zinc-500">
+        <span>A / D or arrow keys to move, space to shoot.</span>
       </div>
     </div>
   );

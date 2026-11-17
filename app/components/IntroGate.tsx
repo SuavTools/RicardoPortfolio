@@ -175,17 +175,14 @@ export default function IntroGate({ onUnlock }: IntroGateProps) {
           Handling television packaging assets, key visual design, and interactive frontend builds. Focus on clean type and functional motion logic.
         </motion.p>
 
-        {/* HIGH-END BUTTON */}
         <motion.button
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
           transition={{ delay: 0.5, duration: 0.6 }}
           onClick={onUnlock}
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
-          className="font-mono text-[10px] tracking-[0.25em] border border-zinc-800 bg-zinc-950 hover:border-zinc-200 text-zinc-300 hover:bg-zinc-50 hover:text-[#09090b] px-12 py-4 rounded-none transition-all duration-300 cursor-pointer uppercase block mx-auto outline-none mt-10 shadow-xl"
+          className="font-sans text-sm md:text-base text-zinc-200 underline underline-offset-[6px] decoration-zinc-600 hover:decoration-zinc-100 transition-colors duration-200 cursor-pointer block mx-auto mt-10 focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-4 focus-visible:outline-zinc-400"
         >
-          SEE PORTFOLIO
+          See the work
         </motion.button>
       </div>
 

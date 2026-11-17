@@ -52,7 +52,6 @@ export default function PlaygroundShader() {
   return (
     <div className="border border-zinc-900 rounded-2xl bg-zinc-950 h-[380px] relative overflow-hidden flex items-center justify-center">
       <canvas ref={canvasRef} className="w-full h-full block opacity-90" style={{ imageRendering: 'pixelated' }} />
-      <div className="absolute top-3 right-4 font-mono text-[8px] text-zinc-500 tracking-widest uppercase">// COMPILING_VERTEX_ALGEBRA_FIELDS</div>
     </div>
   );
 }

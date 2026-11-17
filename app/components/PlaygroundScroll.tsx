@@ -42,8 +42,8 @@ export default function PlaygroundScroll() {
         >
           VELOCITY
         </h4>
-        <span className="font-mono text-[10px] text-zinc-500 mt-4 block uppercase tracking-widest">
-          DELTA_METRIC: {velocity.toFixed(1)} PX/MS // USE MOUSE SCROLL WHEEL TO DISTORT
+        <span className="font-sans text-xs text-zinc-500 mt-4 block">
+          Scroll to distort
         </span>
       </div>
     </div>

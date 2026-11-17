@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Terminal, Gamepad2, Cpu, X, Play } from 'lucide-react';
 
 // Import your independent engineering sandbox nodes cleanly
 import PlaygroundGame from '../components/PlaygroundGame';
@@ -16,8 +15,6 @@ const MODULE_REGISTRY = [
     title: 'Retro Engine Canvas Game Loop', 
     type: 'CUSTOM_JS_LOOP', 
     desc: 'Custom 60fps retro canvas engine handling rapid collision logic grids and vector rendering frames completely decoupled from React hooks thread timelines.',
-    icon: Gamepad2, 
-    accent: 'text-[#ff4e3e]',
     component: PlaygroundGame
   },
   { 
@@ -25,8 +22,6 @@ const MODULE_REGISTRY = [
     title: 'Kinetic Scroll Font Distortion', 
     type: 'WEB_VELOCITY', 
     desc: 'Scroll velocity monitoring array tracking delta coordinates to dynamically twist local system font weights and character stroke metrics.',
-    icon: Cpu, 
-    accent: 'text-[#ffe66c]',
     component: PlaygroundScroll
   },
   { 
@@ -34,8 +29,6 @@ const MODULE_REGISTRY = [
     title: 'WebGL Multi-Pass Render Fragment', 
     type: 'VERTEX_CORE', 
     desc: 'High-density fragment shader arrays compiling direct GPU arithmetic patterns to generate real-time ambient lighting fields.',
-    icon: Terminal, 
-    accent: 'text-indigo-400',
     component: PlaygroundShader
   }
 ];
@@ -56,13 +49,12 @@ export default function Playground() {
       <div className="max-w-4xl space-y-6 w-full mx-auto">
         <Link 
           href="/" 
-          className="group inline-flex items-center gap-2 font-mono text-xs text-[#ffe66c] hover:text-zinc-50 transition-colors tracking-widest duration-300"
+          className="font-sans text-sm text-zinc-300 underline underline-offset-[6px] decoration-zinc-700 hover:decoration-zinc-200 hover:text-zinc-50 transition-colors"
         >
-          ← ESCAPE_TO_MAIN_INDEX
+          Back
         </Link>
         
         <div className="space-y-1">
-          <span className="font-mono text-[10px] uppercase tracking-widest text-[#ff4e3e]">// LABORATORY_SHELL_v5.0</span>
           <h1 className="font-sans text-5xl md:text-7xl font-black tracking-tighter uppercase leading-none">The Lab.</h1>
         </div>
         
@@ -74,7 +66,6 @@ export default function Playground() {
       {/* THE PRIMARY LAB DISPLAY GRID MATRIX */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full my-16 max-w-7xl mx-auto items-stretch">
         {MODULE_REGISTRY.map((item) => {
-          const Icon = item.icon;
           return (
             <motion.div
               key={item.id}
@@ -84,14 +75,6 @@ export default function Playground() {
               className="relative rounded-2xl border border-zinc-900 bg-zinc-900/20 p-6 md:p-8 flex flex-col justify-between h-[300px] group cursor-pointer backdrop-blur-sm transition-all duration-300 hover:bg-zinc-900/40"
             >
               <div className="space-y-4">
-                <div className="flex justify-between items-center">
-                  <div className={`rounded-lg bg-zinc-950 border border-zinc-800 p-2.5 ${item.accent}`}>
-                    <Icon className="h-4 w-4" />
-                  </div>
-                  <span className="font-mono text-[9px] tracking-widest text-zinc-600 group-hover:text-zinc-400 transition-colors">
-                    //_SLOT_{item.id}
-                  </span>
-                </div>
                 
                 <div className="space-y-2">
                   <h3 className="font-sans text-xl font-bold tracking-tight group-hover:text-[#ffe66c] transition-colors duration-300 uppercase">
@@ -100,15 +83,6 @@ export default function Playground() {
                   <p className="font-sans text-xs text-zinc-400 leading-relaxed line-clamp-3">
                     {item.desc}
                   </p>
-                </div>
-              </div>
-
-              <div className="border-t border-zinc-900/60 pt-4 flex items-center justify-between mt-4">
-                <span className="font-mono text-[9px] bg-zinc-950 border border-zinc-800 px-2 py-0.5 rounded text-zinc-500 uppercase tracking-wide">
-                  {item.type}
-                </span>
-                <div className="text-zinc-500 group-hover:text-[#ffe66c] transition-colors">
-                  <Play className="h-4 w-4 animate-pulse" />
                 </div>
               </div>
             </motion.div>
@@ -139,31 +113,19 @@ export default function Playground() {
               {/* Overlay System Exit Button Control */}
               <button
                 onClick={() => setActiveModuleId(null)}
-                className="absolute top-4 right-4 z-30 rounded-full bg-zinc-900 border border-zinc-800 p-2.5 text-zinc-400 hover:text-zinc-50 hover:border-zinc-700 transition shadow-md cursor-pointer"
+                className="absolute top-4 right-6 z-30 font-sans text-sm text-zinc-400 hover:text-zinc-50 underline-offset-[6px] hover:underline transition-colors cursor-pointer"
               >
-                <X className="h-4 w-4" />
+                Close
               </button>
 
               {/* Dynamically mount the isolated active engineering node cleanly */}
               <div className="w-full">
                 <CurrentActiveComponent />
               </div>
-
-              {/* Operational Subtext Metric */}
-              <div className="flex justify-between font-mono text-[9px] text-zinc-600 uppercase tracking-wide border-t border-zinc-900 pt-4">
-                <span>LAB_ID: {activeModuleId}</span>
-                <span>STATE: DEPLOYED_SANDBOX_CONTEXT</span>
-              </div>
             </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
-
-      {/* FOOTER DIAGNOSTIC BASELINE */}
-      <div className="flex flex-col sm:flex-row justify-between items-center text-zinc-600 font-mono text-[10px] tracking-wider gap-2 border-t border-zinc-900/60 pt-6 w-full max-w-7xl mx-auto">
-        <span>// PIPELINE RUNTIME LOGS: STABLE</span>
-        <span>SYS_CORE_NODE_POOL: ONLINE</span>
-      </div>
     </main>
   );
 }
