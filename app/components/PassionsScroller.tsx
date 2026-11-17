@@ -211,7 +211,7 @@ export default function PassionsScroller({ linkTo }: { linkTo?: string }) {
   }, [count]);
 
   return (
-    <div id="about" className="bg-zinc-950 text-zinc-50">
+    <div id="about" className="text-zinc-50">
       {/* Passions: side scroller on desktop */}
       <section ref={trackRef} className="relative hidden md:block" style={{ height: `${count * 100}vh` }}>
         <div className="sticky top-0 h-screen overflow-hidden">

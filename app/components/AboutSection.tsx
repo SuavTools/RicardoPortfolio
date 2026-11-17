@@ -3,7 +3,7 @@
 
 export default function AboutSection() {
   return (
-    <section id="contact" className="min-h-[80vh] bg-zinc-950 text-zinc-50 py-32 border-t border-zinc-900 relative overflow-hidden">
+    <section id="contact" className="min-h-[80vh] text-zinc-50 py-32 border-t border-zinc-900 relative overflow-hidden">
 
       <div className="master grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-24 relative z-10">
         

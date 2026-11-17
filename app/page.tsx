@@ -5,6 +5,7 @@ import { AnimatePresence } from 'framer-motion';
 import IntroGate from './components/IntroGate';
 import BespokeNavbar from './components/BespokeNavbar';
 import PassionsScroller from './components/PassionsScroller';
+import AmbientBackground from './components/AmbientBackground';
 import AsymmetricPortfolio from './components/AsymmetricPortfolio';
 import AboutSection from './components/AboutSection';
 
@@ -33,7 +34,7 @@ export default function Home() {
   };
 
   return (
-    <main className="bg-zinc-950 overflow-x-clip antialiased selection:bg-brand-yellow selection:text-zinc-950 relative">
+    <main className="overflow-x-clip antialiased selection:bg-brand-yellow selection:text-zinc-950 relative">
       {/* Cinematic Entry Gate Overlay Window */}
       <AnimatePresence mode="wait">
         {isUnlocked === false && (
@@ -45,6 +46,8 @@ export default function Home() {
       {isUnlocked && (
         <>
           {/* HUD Navigation Panel overlay */}
+          <AmbientBackground />
+
           <BespokeNavbar />
 
           <PassionsScroller linkTo="#projects" />

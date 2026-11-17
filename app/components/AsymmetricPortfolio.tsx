@@ -62,7 +62,7 @@ export default function AsymmetricPortfolio() {
   return (
     <section 
       id="projects" 
-      className="min-h-screen bg-zinc-950 text-zinc-50 py-32 relative select-none"
+      className="min-h-screen text-zinc-50 py-32 relative select-none"
     >
       {/* STYLE INJECTION TO STABILIZE DYNAMIC CAROUSELS AND HIDE SCROLLBARS */}
       <style jsx global>{`
