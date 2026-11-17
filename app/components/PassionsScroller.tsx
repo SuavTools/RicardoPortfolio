@@ -101,12 +101,16 @@ export default function PassionsScroller({ linkTo }: { linkTo?: string }) {
     let idleTimer: ReturnType<typeof setTimeout> | undefined;
     let frame = 0;
 
+    // Stops are derived from the section's real rendered height so they always
+    // line up exactly with where each panel sits.
     const bounds = () => {
       const el = trackRef.current;
       if (!el || el.offsetHeight === 0) return null; // hidden on mobile
       const vh = window.innerHeight;
       const start = window.scrollY + el.getBoundingClientRect().top;
-      return { vh, start, end: start + el.offsetHeight - vh };
+      const end = start + el.offsetHeight - vh;
+      const gap = (end - start) / (count - 1);
+      return { vh, start, end, gap, stop: (i: number) => start + i * gap };
     };
 
     const ease = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
@@ -131,26 +135,54 @@ export default function PassionsScroller({ linkTo }: { linkTo?: string }) {
       frame = requestAnimationFrame(tick);
     };
 
-    const onWheel = (e: WheelEvent) => {
+    // Works out where one step in `dir` should land, or null to let the page
+    // scroll normally (past the last panel, or above the first).
+    const stepTarget = (dir: number) => {
+      if (document.body.style.overflow === 'hidden') return null; // a project gallery is open
       const b = bounds();
-      if (!b) return;
+      if (!b) return null;
       const y = window.scrollY;
+      if (dir > 0) {
+        if (y < b.start - 1 || y >= b.end - 1) return null;
+        const pos = (y - b.start) / b.gap;
+        return b.stop(Math.min(count - 1, Math.floor(pos + 0.01) + 1));
+      }
+      if (y <= b.start + 1) return null;
+      // Coming back up from the work: pull the last panel in cleanly
+      // instead of letting the page drift halfway into the gallery.
+      if (y > b.end + 1) return y < b.end + b.vh ? b.stop(count - 1) : null;
+      const pos = (y - b.start) / b.gap;
+      return b.stop(Math.max(0, Math.ceil(pos - 0.01) - 1));
+    };
+
+    const onWheel = (e: WheelEvent) => {
       const dir = Math.sign(e.deltaY);
       if (!dir) return;
-      const inside = dir > 0 ? y >= b.start - 1 && y < b.end - 1 : y > b.start + 1 && y <= b.end + 1;
-      if (!inside) return;
-
-      e.preventDefault();
       const now = performance.now();
-      // Swallow the rest of this gesture (trackpad momentum, fast wheel ticks)
+      // Swallow the rest of a gesture that already moved us (trackpad momentum, fast wheel ticks)
       if (animating || now < lockUntil) {
-        lockUntil = Math.max(lockUntil, now + 120);
+        if (stepTarget(dir) !== null || animating) {
+          e.preventDefault();
+          lockUntil = Math.max(lockUntil, now + 120);
+        }
         return;
       }
-      const pos = (y - b.start) / b.vh;
-      const next = dir > 0 ? Math.floor(pos + 0.01) + 1 : Math.ceil(pos - 0.01) - 1;
-      const index = Math.max(0, Math.min(count - 1, next));
-      glideTo(b.start + index * b.vh);
+      const target = stepTarget(dir);
+      if (target === null) return;
+      e.preventDefault();
+      glideTo(target);
+    };
+
+    const onKey = (e: KeyboardEvent) => {
+      const el = e.target as HTMLElement | null;
+      if (el && (el.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(el.tagName))) return;
+      const down = ['ArrowDown', 'PageDown'].includes(e.key) || (e.key === ' ' && !e.shiftKey);
+      const up = ['ArrowUp', 'PageUp'].includes(e.key) || (e.key === ' ' && e.shiftKey);
+      if (!down && !up) return;
+      const target = stepTarget(down ? 1 : -1);
+      if (target === null) return;
+      e.preventDefault();
+      if (!animating) glideTo(target);
     };
 
     // Scrollbar, keyboard or touch: settle on the nearest panel once scrolling stops
@@ -162,16 +194,18 @@ export default function PassionsScroller({ linkTo }: { linkTo?: string }) {
         if (!b || animating) return;
         const y = window.scrollY;
         if (y <= b.start || y >= b.end) return;
-        glideTo(b.start + Math.round((y - b.start) / b.vh) * b.vh);
+        glideTo(b.stop(Math.round((y - b.start) / b.gap)));
       }, 150);
     };
 
     window.addEventListener('wheel', onWheel, { passive: false });
+    window.addEventListener('keydown', onKey);
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => {
       cancelAnimationFrame(frame);
       clearTimeout(idleTimer);
       window.removeEventListener('wheel', onWheel);
+      window.removeEventListener('keydown', onKey);
       window.removeEventListener('scroll', onScroll);
     };
   }, [count]);

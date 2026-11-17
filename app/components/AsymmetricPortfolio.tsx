@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import GalleryMedia from './GalleryMedia';
 
 export default function AsymmetricPortfolio() {
   const [projects, setProjects] = useState<any[]>([]);
@@ -9,25 +10,14 @@ export default function AsymmetricPortfolio() {
   const [hoveredId, setHoveredId] = useState<string | null>(null);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   
-  const [activeIndex, setActiveIndex] = useState(0);
-
   const galleryItems: { url: string; type: 'video' | 'image' }[] = selected
     ? [
         ...(selected.mediaUrl ? [{ url: selected.mediaUrl, type: selected.mediaType }] : []),
         ...(selected.gallery ?? []),
       ]
     : [];
-  const activeItem = galleryItems[activeIndex];
 
-  const step = (dir: number) => {
-    if (galleryItems.length < 2) return;
-    setActiveIndex((i) => (i + dir + galleryItems.length) % galleryItems.length);
-  };
-
-  const openProject = (project: any) => {
-    setActiveIndex(0);
-    setSelected(project);
-  };
+  const openProject = (project: any) => setSelected(project);
 
   // Dynamic directory scanner fetch stream initialization hook
   useEffect(() => {
@@ -45,23 +35,20 @@ export default function AsymmetricPortfolio() {
     loadDynamicMedia();
   }, []);
 
-  // Gallery: lock page scroll; Escape closes, arrow keys step through
-  const galleryCount = galleryItems.length;
+  // Gallery: lock page scroll behind it; Escape closes
   useEffect(() => {
     if (!selected) return;
     const prevOverflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') setSelected(null);
-      else if (galleryCount > 1 && e.key === 'ArrowRight') setActiveIndex((i) => (i + 1) % galleryCount);
-      else if (galleryCount > 1 && e.key === 'ArrowLeft') setActiveIndex((i) => (i - 1 + galleryCount) % galleryCount);
     };
     window.addEventListener('keydown', onKey);
     return () => {
       document.body.style.overflow = prevOverflow;
       window.removeEventListener('keydown', onKey);
     };
-  }, [selected, galleryCount]);
+  }, [selected]);
 
   // Tracks cursor placement inside row blocks for the floating element
   const handleMouseMove = (e: React.MouseEvent) => {
@@ -156,7 +143,7 @@ export default function AsymmetricPortfolio() {
         </AnimatePresence>
       </div>
 
-      {/* 3. FULL-SCREEN GALLERY */}
+      {/* 3. FULL-SCREEN GALLERY: scroll down through everything */}
       <AnimatePresence>
         {selected && (
           <motion.div
@@ -168,92 +155,50 @@ export default function AsymmetricPortfolio() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
-            className="fixed inset-0 z-50 flex flex-col bg-zinc-950 text-zinc-50"
+            className="fixed inset-0 z-50 overflow-y-auto overscroll-contain bg-zinc-950 text-zinc-50"
           >
-            {/* Top bar */}
-            <div className="master flex items-start justify-between gap-6 py-5 flex-shrink-0">
-              <div className="max-w-2xl space-y-2">
+            {/* Pinned top bar */}
+            <div className="sticky top-0 z-10 bg-zinc-950/80">
+              <div className="master flex items-center justify-between gap-6 py-5">
                 <h3 className="font-sans text-xl md:text-2xl font-black tracking-tighter uppercase leading-none">
                   {selected.title}
                 </h3>
-                <p className="hidden md:block font-sans text-sm text-zinc-400 leading-relaxed">
+                <button
+                  onClick={() => setSelected(null)}
+                  className="font-sans uppercase tracking-wider text-sm text-zinc-400 hover:text-zinc-50 underline-offset-[6px] hover:underline transition-colors cursor-pointer"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+
+            <div className="master pt-10 pb-32">
+              {selected.longDesc && (
+                <p className="font-sans text-base md:text-lg text-zinc-400 leading-relaxed max-w-2xl mb-16">
                   {selected.longDesc}
                 </p>
-              </div>
-              <button
-                onClick={() => setSelected(null)}
-                className="font-sans uppercase tracking-wider text-sm text-zinc-400 hover:text-zinc-50 underline-offset-[6px] hover:underline transition-colors cursor-pointer"
-              >
-                Close
-              </button>
-            </div>
-
-            {/* Media */}
-            <div className="master relative flex-1 min-h-0">
-              <AnimatePresence mode="wait" initial={false}>
-                {activeItem && (
-                  <motion.div
-                    key={`${selected.id}-${activeIndex}`}
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.2 }}
-                    drag={galleryItems.length > 1 ? 'x' : false}
-                    dragConstraints={{ left: 0, right: 0 }}
-                    dragElastic={0.2}
-                    onDragEnd={(_, info) => {
-                      if (info.offset.x < -60) step(1);
-                      else if (info.offset.x > 60) step(-1);
-                    }}
-                    className="h-full flex items-center justify-center"
-                  >
-                    {activeItem.type === 'video' ? (
-                      <video
-                        src={activeItem.url}
-                        autoPlay
-                        loop
-                        muted
-                        playsInline
-                        controls
-                        preload="auto"
-                        className="max-w-full max-h-full object-contain"
-                      />
-                    ) : (
-                      <img
-                        src={activeItem.url}
-                        alt={`${selected.title} ${activeIndex + 1}`}
-                        draggable={false}
-                        className="max-w-full max-h-full object-contain"
-                      />
-                    )}
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
-
-            {/* Bottom bar */}
-            <div className="master flex items-center justify-between py-5 flex-shrink-0 font-sans uppercase tracking-wider text-sm text-zinc-400">
-              {galleryItems.length > 1 ? (
-                <>
-                  <button
-                    onClick={() => step(-1)}
-                    className="hover:text-zinc-50 underline-offset-[6px] hover:underline transition-colors cursor-pointer"
-                  >
-                    Prev
-                  </button>
-                  <span className="text-zinc-600 tabular-nums">
-                    {activeIndex + 1} / {galleryItems.length}
-                  </span>
-                  <button
-                    onClick={() => step(1)}
-                    className="hover:text-zinc-50 underline-offset-[6px] hover:underline transition-colors cursor-pointer"
-                  >
-                    Next
-                  </button>
-                </>
-              ) : (
-                <span />
               )}
+
+              <div className="flex flex-col gap-6 md:gap-10">
+                {galleryItems.map((item, i) => (
+                  <GalleryMedia
+                    key={`${selected.id}-${i}`}
+                    url={item.url}
+                    type={item.type}
+                    alt={`${selected.title} ${i + 1}`}
+                    eager={i < 2}
+                  />
+                ))}
+              </div>
+
+              <div className="mt-20">
+                <button
+                  onClick={() => setSelected(null)}
+                  className="font-sans uppercase tracking-wider text-sm text-zinc-400 hover:text-zinc-50 underline-offset-[6px] hover:underline transition-colors cursor-pointer"
+                >
+                  Back to work
+                </button>
+              </div>
             </div>
           </motion.div>
         )}
