@@ -177,7 +177,7 @@ export default function AsymmetricPortfolio() {
             <div className="flex items-center justify-end gap-4 px-6 py-5 md:px-10 border-b border-zinc-900 flex-shrink-0">
               <button
                 onClick={() => setSelected(null)}
-                className="font-sans text-sm text-zinc-400 hover:text-zinc-50 underline-offset-[6px] hover:underline transition-colors cursor-pointer"
+                className="font-sans uppercase tracking-wider text-sm text-zinc-400 hover:text-zinc-50 underline-offset-[6px] hover:underline transition-colors cursor-pointer"
               >
                 Close
               </button>
@@ -237,7 +237,7 @@ export default function AsymmetricPortfolio() {
           <div className="fixed inset-0 z-[60] flex items-center justify-center bg-zinc-950/95 backdrop-blur-md p-4 md:p-12">
             <button
               onClick={closeLightbox}
-              className="absolute top-6 right-6 z-50 font-sans text-sm text-zinc-400 hover:text-zinc-50 underline-offset-[6px] hover:underline transition-colors cursor-pointer"
+              className="absolute top-6 right-6 z-50 font-sans uppercase tracking-wider text-sm text-zinc-400 hover:text-zinc-50 underline-offset-[6px] hover:underline transition-colors cursor-pointer"
             >
               Close
             </button>

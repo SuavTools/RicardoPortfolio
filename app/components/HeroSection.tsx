@@ -40,7 +40,7 @@ export default function HeroSection() {
             className="absolute top-0 left-0 right-0 h-4 bg-[#ff4e3e]"
           />
         </div>
-        <span className="font-sans text-xs text-zinc-500">
+        <span className="font-sans uppercase tracking-wider text-xs text-zinc-500">
           Scroll
         </span>
       </div>

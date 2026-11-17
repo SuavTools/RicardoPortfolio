@@ -25,16 +25,16 @@ export default function AboutSection() {
               href="https://linkedin.com"
               target="_blank" 
               rel="noopener noreferrer"
-              className="block w-fit font-sans text-sm text-zinc-300 underline underline-offset-[6px] decoration-zinc-700 hover:decoration-zinc-200 hover:text-zinc-50 transition-colors py-1"
+              className="block w-fit font-mono text-xs text-zinc-400 hover:text-[#ffe66c] transition-colors py-1 uppercase tracking-wider"
             >
               LinkedIn
             </a>
 
             <a 
               href="mailto:ricardo.moreira.designs@gmail.com"
-              className="block w-fit font-sans text-sm text-zinc-300 underline underline-offset-[6px] decoration-zinc-700 hover:decoration-zinc-200 hover:text-zinc-50 transition-colors py-1"
+              className="block w-fit font-mono text-xs text-zinc-400 hover:text-[#ffe66c] transition-colors py-1 uppercase tracking-wider"
             >
-              ricardo.moreira.designs@gmail.com
+              Email
             </a>
           </div>
         </div>

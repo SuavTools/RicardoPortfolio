@@ -172,7 +172,7 @@ export default function IntroGate({ onUnlock }: IntroGateProps) {
           animate={{ opacity: 1 }}
           transition={{ delay: 0.5, duration: 0.6 }}
           onClick={onUnlock}
-          className="font-sans text-sm md:text-base text-zinc-200 underline underline-offset-[6px] decoration-zinc-600 hover:decoration-zinc-100 transition-colors duration-200 cursor-pointer block mx-auto mt-10 focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-4 focus-visible:outline-zinc-400"
+          className="font-sans uppercase tracking-wider text-sm md:text-base text-zinc-200 underline underline-offset-[6px] decoration-zinc-600 hover:decoration-zinc-100 transition-colors duration-200 cursor-pointer block mx-auto mt-10 focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-4 focus-visible:outline-zinc-400"
         >
           See the work
         </motion.button>

@@ -42,7 +42,7 @@ export default function Playground() {
       <div className="max-w-4xl space-y-6 w-full mx-auto">
         <Link 
           href="/" 
-          className="font-sans text-sm text-zinc-300 underline underline-offset-[6px] decoration-zinc-700 hover:decoration-zinc-200 hover:text-zinc-50 transition-colors"
+          className="font-sans uppercase tracking-wider text-sm text-zinc-300 underline underline-offset-[6px] decoration-zinc-700 hover:decoration-zinc-200 hover:text-zinc-50 transition-colors"
         >
           Back
         </Link>
@@ -103,7 +103,7 @@ export default function Playground() {
               {/* Overlay System Exit Button Control */}
               <button
                 onClick={() => setActiveModuleId(null)}
-                className="absolute top-4 right-6 z-30 font-sans text-sm text-zinc-400 hover:text-zinc-50 underline-offset-[6px] hover:underline transition-colors cursor-pointer"
+                className="absolute top-4 right-6 z-30 font-sans uppercase tracking-wider text-sm text-zinc-400 hover:text-zinc-50 underline-offset-[6px] hover:underline transition-colors cursor-pointer"
               >
                 Close
               </button>

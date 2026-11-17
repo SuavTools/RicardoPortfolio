@@ -247,14 +247,14 @@ export default function PlaygroundGame() {
         {gameOver && (
           <div className="absolute inset-0 bg-zinc-950/95 flex flex-col items-center justify-center space-y-3">
             <h3 className="font-sans text-3xl font-black text-zinc-50">DEFENSE CRITICAL</h3>
-            <button onClick={restartAll} className="font-sans text-sm text-zinc-200 underline underline-offset-[6px] decoration-zinc-600 hover:decoration-zinc-100 transition-colors cursor-pointer">Try again</button>
+            <button onClick={restartAll} className="font-sans uppercase tracking-wider text-sm text-zinc-200 underline underline-offset-[6px] decoration-zinc-600 hover:decoration-zinc-100 transition-colors cursor-pointer">Try again</button>
           </div>
         )}
 
         {victory && (
           <div className="absolute inset-0 bg-zinc-950/95 flex flex-col items-center justify-center space-y-3">
             <h3 className="font-sans text-3xl font-black text-[#ffe66c]">VICTORY</h3>
-            <button onClick={restartAll} className="font-sans text-sm text-zinc-200 underline underline-offset-[6px] decoration-zinc-600 hover:decoration-zinc-100 transition-colors cursor-pointer">Play again</button>
+            <button onClick={restartAll} className="font-sans uppercase tracking-wider text-sm text-zinc-200 underline underline-offset-[6px] decoration-zinc-600 hover:decoration-zinc-100 transition-colors cursor-pointer">Play again</button>
           </div>
         )}
       </div>

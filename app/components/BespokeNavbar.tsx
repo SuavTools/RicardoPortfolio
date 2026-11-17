@@ -14,13 +14,13 @@ export default function BespokeNavbar() {
   return (
     <>
       <header className="fixed top-6 left-0 right-0 z-50 flex justify-between items-center px-6 md:px-12 pointer-events-none">
-        <a href="#" className="pointer-events-auto font-sans text-sm font-bold text-zinc-100">
+        <a href="#" className="pointer-events-auto font-sans uppercase tracking-wider text-sm font-bold text-zinc-100">
           Ricardo Moreira
         </a>
 
         <button
           onClick={() => setIsOpen(true)}
-          className="pointer-events-auto font-sans text-sm text-zinc-100 underline-offset-[6px] decoration-zinc-500 hover:underline cursor-pointer"
+          className="pointer-events-auto font-sans uppercase tracking-wider text-sm text-zinc-100 underline-offset-[6px] decoration-zinc-500 hover:underline cursor-pointer"
         >
           Menu
         </button>
@@ -39,7 +39,7 @@ export default function BespokeNavbar() {
             <div className="flex items-center justify-end border-b border-zinc-900 pb-6">
               <button
                 onClick={() => setIsOpen(false)}
-                className="font-sans text-sm text-zinc-400 hover:text-zinc-50 underline-offset-[6px] hover:underline transition-colors cursor-pointer"
+                className="font-sans uppercase tracking-wider text-sm text-zinc-400 hover:text-zinc-50 underline-offset-[6px] hover:underline transition-colors cursor-pointer"
               >
                 Close
               </button>
