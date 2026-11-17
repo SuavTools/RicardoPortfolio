@@ -86,7 +86,7 @@ export default function PassionsScroller({ linkTo }: { linkTo?: string }) {
   const x = useTransform(scrollYProgress, [0, 1], ['0%', `-${((count - 1) / count) * 100}%`]);
 
   return (
-    <div className="bg-zinc-950 text-zinc-50">
+    <div id="about" className="bg-zinc-950 text-zinc-50">
       {/* Passions: side scroller on desktop */}
       <section ref={trackRef} className="relative hidden md:block" style={{ height: `${count * 100}vh` }}>
         <div className="sticky top-0 h-screen overflow-hidden">

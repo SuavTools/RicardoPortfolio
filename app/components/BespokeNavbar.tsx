@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 const NAVIGATION_LINKS = [
   { index: '01', title: 'Work', href: '/#projects' },
-  { index: '02', title: 'About', href: '/about' },
+  { index: '02', title: 'About', href: '/#about' },
 ];
 
 export default function BespokeNavbar() {

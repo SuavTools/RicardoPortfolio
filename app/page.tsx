@@ -9,7 +9,7 @@ import AsymmetricPortfolio from './components/AsymmetricPortfolio';
 import AboutSection from './components/AboutSection';
 
 export default function Home() {
-  // Skip the gate if it was already passed this session (e.g. coming back from /about).
+  // Skip the gate if it was already passed this session (e.g. after a reload).
   // Server render returns null so nothing flashes before we know.
   const gatePassed = useSyncExternalStore(
     () => () => {},
