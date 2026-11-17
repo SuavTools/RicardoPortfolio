@@ -6,15 +6,11 @@ export default function HeroSection() {
   return (
     <section className="min-h-[85vh] flex flex-col justify-center px-4 md:px-16 lg:px-24 relative overflow-hidden select-none bg-zinc-950 text-zinc-50">
       
-      {/* Immersive Music Brand Light Leaks */}
-      <div className="absolute top-1/3 left-1/4 -translate-x-1/2 -z-10 h-[500px] w-[500px] rounded-full bg-brand-yellow/5 blur-[130px]" />
-      <div className="absolute bottom-1/4 right-1/4 translate-x-1/2 -z-10 h-[500px] w-[500px] rounded-full bg-brand-red/5 blur-[130px]" />
-
       <div className="max-w-5xl space-y-6 pt-12">
         {/* Clear, high-contrast typography stack with no bleeding colors */}
         <h1 className="font-sans text-5xl sm:text-7xl md:text-8xl lg:text-[9rem] font-black tracking-tighter leading-[0.82] uppercase">
           {/* Locked music project red hex — completely bulletproof */}
-          <span className="text-[#ff4e3e] block transition-all duration-300 hover:scale-[1.01] origin-left select-all">
+          <span className="text-[#ff4e3e] block">
             creative
           </span> 
           
@@ -30,8 +26,8 @@ export default function HeroSection() {
         </h1>
 
         {/* Crisp Monospace Operational Narrative Subtitle */}
-        <p className="font-mono text-xs md:text-sm text-zinc-400 max-w-xl leading-relaxed uppercase tracking-wide">
-          hi, i&apos;m ricardo. engineering interactive web spaces, television broadcast art packages, and elevated design for networks like sbs.
+        <p className="font-sans text-base md:text-lg text-zinc-400 max-w-xl leading-relaxed">
+          Hi, I&apos;m Ricardo. I design key art, motion and campaigns for networks like SBS, and build the odd website.
         </p>
       </div>
 

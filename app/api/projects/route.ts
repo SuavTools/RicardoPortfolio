@@ -6,22 +6,22 @@ const CATEGORY_MAP: Record<string, { title: string; category: 'Finished Art & Ca
   'sbs-campaign-art': {
     title: 'Selected Campaign Art',
     category: 'Finished Art & Campaigns',
-    desc: 'Key asset modifications, show art layouts, and commercial network display campaigns.',
-    longDesc: 'Executed digital campaign assets and show art treatments for major broadcasting titles. Balanced high-density text layout metrics with striking photography style frames to align across multi-platform out-of-home (OOH) digital displays.',
+    desc: 'Show art and campaign layouts for TV.',
+    longDesc: 'Show art and campaign assets for major broadcast titles, adapted across digital, social and outdoor placements. Lots of type, strong photography, and making it all hold together at every size.',
     tags: ['Key Art Expansion', 'Campaign Layouts', 'Finished Art', 'Asset Control']
   },
   'sbs-motion-endboards': {
     title: 'Motion Design',
     category: 'Motion Design & End-Boards',
-    desc: 'Promotional packaging elements, on-air network assets, and end-board variations.',
-    longDesc: 'Developed dynamic animated end-boards and on-air motion graphics across national television flights. Handled swift workflow iterations to enforce strict technical design guidelines while keeping text visibility perfectly sharp on screen.',
+    desc: 'On-air promos and end boards.',
+    longDesc: 'Animated end boards and on-air graphics for national TV campaigns. Fast turnarounds, tight brand guidelines, and type that stays readable on screen.',
     tags: ['Motion Design', 'On-Air End-Boards', 'Broadcast Graphics', 'Kinetic Type']
   },
   'music-video-direction': {
     title: 'Creative Direction Music Clip',
     category: 'Creative Direction & Editing',
-    desc: 'Comprehensive visual direction, video editing pipeline execution, and post-production flow.',
-    longDesc: 'An independent visual project mapping end-to-end creative execution. Structured the initial look development storyboards, designed text treatments, and cut the full cinematic rhythm matching sound waveforms.',
+    desc: 'Direction and edit for a music video.',
+    longDesc: 'An independent music video I directed and edited. I did the storyboards and look, designed the titles, and cut it to the track.',
     tags: ['Creative Direction', 'Film Editing', 'Color Grading', 'Visual Continuity']
   }
 };

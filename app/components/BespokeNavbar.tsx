@@ -4,8 +4,8 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const NAVIGATION_LINKS = [
-  { index: '01', title: 'SELECTED WORK', href: '#projects' },
-  { index: '02', title: 'THE PLAYGROUND', href: '/playground' },
+  { index: '01', title: 'Work', href: '#projects' },
+  { index: '02', title: 'Playground', href: '/playground' },
 ];
 
 export default function BespokeNavbar() {
@@ -35,8 +35,6 @@ export default function BespokeNavbar() {
             transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
             className="fixed inset-0 z-50 flex flex-col justify-between bg-zinc-950 p-8 md:p-24 text-zinc-50 overflow-hidden"
           >
-            <div className="absolute top-[-10%] right-[-10%] -z-10 h-[500px] w-[500px] rounded-full bg-brand-yellow/5 blur-[120px]" />
-            <div className="absolute bottom-[-10%] left-[-10%] -z-10 h-[500px] w-[500px] rounded-full bg-brand-red/5 blur-[120px]" />
 
             <div className="flex items-center justify-end border-b border-zinc-900 pb-6">
               <button
@@ -61,11 +59,6 @@ export default function BespokeNavbar() {
                 </a>
               ))}
             </nav>
-
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center border-t border-zinc-900 pt-6 gap-4 font-mono text-[10px] text-zinc-600">
-              <span>BROADCAST MASTER PIPELINE</span>
-              <span>SIGNAL INTERCEPT: <span className="text-brand-yellow animate-pulse">ACTIVE</span></span>
-            </div>
           </motion.div>
         )}
       </AnimatePresence>

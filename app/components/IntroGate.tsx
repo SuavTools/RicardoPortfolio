@@ -137,16 +137,13 @@ export default function IntroGate({ onUnlock }: IntroGateProps) {
         style={{ imageRendering: 'pixelated' }}
       />
 
-      <div className="absolute inset-0 pointer-events-none opacity-[0.012] mix-blend-overlay bg-repeat bg-[url('data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://w3.org id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.8%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E')]" />
-
       {/* 1. HEADER */}
-      <div className="flex justify-between items-center font-mono text-[9px] text-zinc-500 tracking-[0.3em] uppercase z-20">
-        <span>RICARDO MOREIRA</span>
-        <span>SYDNEY</span>
+      <div className="flex justify-between items-center font-sans text-xs text-zinc-500 z-20">
+        <span>Ricardo Moreira</span>
+        <span>Sydney</span>
       </div>
 
-      {/* 2. CORE TYPOGRAPHIC CENTERPIECE (With an absolute contrast guard layout) */}
-      <div className="w-full max-w-4xl mx-auto flex flex-col items-center justify-center text-center z-20 my-auto relative px-8 py-16 bg-[#000000]/80 border border-zinc-900/50 backdrop-blur-xl rounded-3xl shadow-[0_0_80px_rgba(0,0,0,0.9)]">
+      <div className="w-full max-w-4xl mx-auto flex flex-col items-center justify-center text-center z-20 my-auto relative px-8 py-16">
         
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -159,11 +156,6 @@ export default function IntroGate({ onUnlock }: IntroGateProps) {
             <span className="text-zinc-50">moreira.</span>
           </h2>
           
-          <div className="flex items-center justify-center gap-4 text-zinc-500 font-mono text-[9px] tracking-[0.4em] uppercase">
-            <span>CREATIVE</span>
-            <span className="h-[1px] w-6 bg-zinc-800" />
-            <span>MOTION</span>
-          </div>
         </motion.div>
 
         <motion.p
@@ -172,7 +164,7 @@ export default function IntroGate({ onUnlock }: IntroGateProps) {
           transition={{ delay: 0.3, duration: 0.8 }}
           className="font-sans text-zinc-400 text-xs md:text-sm max-w-md font-light leading-relaxed tracking-wide mt-8"
         >
-          Handling television packaging assets, key visual design, and interactive frontend builds. Focus on clean type and functional motion logic.
+          Designer working across key art, motion and campaigns for TV, plus the odd website.
         </motion.p>
 
         <motion.button
@@ -187,9 +179,8 @@ export default function IntroGate({ onUnlock }: IntroGateProps) {
       </div>
 
       {/* 3. BASELINE FOOTER */}
-      <div className="flex justify-between items-center border-t border-zinc-900 pt-6 z-20 text-zinc-600 font-mono text-[9px] tracking-[0.2em] uppercase">
-        <span>LEGIBILITY PIPELINE BUFFER SECURE</span>
-        <span>© 2026 ALL RIGHTS RESERVED</span>
+      <div className="flex justify-end items-center z-20 text-zinc-600 font-sans text-xs">
+        <span>© 2026</span>
       </div>
     </motion.div>
   );
