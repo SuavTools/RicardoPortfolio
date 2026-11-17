@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 const NAVIGATION_LINKS = [
   { index: '01', title: 'Work', href: '#projects' },
-  { index: '02', title: 'Playground', href: '/playground' },
+  { index: '02', title: 'About', href: '#about' },
 ];
 
 export default function BespokeNavbar() {
@@ -53,7 +53,7 @@ export default function BespokeNavbar() {
                   onClick={() => setIsOpen(false)}
                   className="group flex items-baseline gap-4 md:gap-8 border-b border-zinc-900 pb-6 overflow-hidden"
                 >
-                  <span className="font-sans text-4xl sm:text-6xl md:text-8xl font-black tracking-tighter text-zinc-50 transition-transform duration-500 group-hover:text-brand-yellow group-hover:translate-x-6">
+                  <span className="font-sans text-4xl sm:text-6xl md:text-8xl font-black tracking-tighter uppercase text-zinc-50 transition-transform duration-500 group-hover:text-brand-yellow group-hover:translate-x-6">
                     {link.title}
                   </span>
                 </a>

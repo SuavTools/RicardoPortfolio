@@ -53,7 +53,7 @@ export default function AboutSection() {
               I&apos;ve worked on visuals for national broadcasters like <span className="text-zinc-100 font-bold">SBS</span>, from rough storyboards to animated title cards and outdoor campaigns.
             </p>
             <p>
-              Outside of client work I make things for fun: animation experiments, a little retro game, and this site.
+              Outside of client work I mess around with code and animation, including this site.
             </p>
           </div>
         </div>
