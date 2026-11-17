@@ -95,7 +95,7 @@ export default function AsymmetricPortfolio() {
                 <span className="font-mono text-xs text-zinc-600 group-hover:text-[#ff4e3e] transition-colors duration-300">
                   0{idx + 1}
                 </span>
-                <h3 className="font-sans text-2xl sm:text-4xl md:text-5xl font-black tracking-tighter text-zinc-100 group-hover:text-[#ffe66c] transition-colors duration-300 uppercase">
+                <h3 className="font-sans text-2xl sm:text-4xl md:text-5xl font-black tracking-tighter text-zinc-100 uppercase">
                   {project.title}
                 </h3>
               </div>
