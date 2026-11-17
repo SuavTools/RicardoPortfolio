@@ -11,7 +11,7 @@ const PASSIONS = [
   {
     title: "Hi, I'm Ricardo",
     blurb:
-      "A multidisciplinary graphic designer working across static, motion and digital. I'm always picking up new skills, and I love blending design and motion into the interfaces people actually use.\n\nI design with the user journey and strategy in mind, thinking past the screen to how people interact with things. Off the screen, I build electrical gadgets by hand. When I say I tinker, I mean it. I just love making things exist in the real world.",
+      "A multidisciplinary graphic designer working across static, motion and digital, and immersed in the full marketing and design discipline. I'm a full-blown tinkerer, always picking up new tools.\n\nI'm a sucker for functionality and frictionless surfaces. Design should feel witty and effortless, and serve the brief. I like pretty things for the sake of pretty, but in design it either communicates and serves the mission, or it's noise.\n\nI love strategy and frameworks, and I want my work to carry a kind of effortless grace.\n\nOff the screen, I build electrical gadgets by hand. When I say I tinker, I mean it. I just love making things exist in the real world.",
   },
   {
     title: 'Key art',
@@ -62,13 +62,13 @@ function PanelMedia({ item, alt, linkTo }: { item?: AboutMedia; alt: string; lin
 
 function PanelText({ index, title, blurb }: { index: number; title: string; blurb: string }) {
   return (
-    <div className="space-y-6 max-w-md">
+    <div className="space-y-5 max-w-lg">
       <span className="font-mono text-xs text-zinc-600">0{index + 1}</span>
       <h2 className="font-sans text-4xl sm:text-6xl md:text-7xl font-black tracking-tighter uppercase leading-[0.9] text-zinc-50">
         {title}
       </h2>
       {blurb.split('\n\n').map((para) => (
-        <p key={para.slice(0, 24)} className="font-sans text-base md:text-lg text-zinc-400 leading-relaxed">
+        <p key={para.slice(0, 24)} className="font-sans text-base xl:text-lg text-zinc-400 leading-relaxed">
           {para}
         </p>
       ))}
