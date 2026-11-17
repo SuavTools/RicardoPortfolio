@@ -42,12 +42,15 @@ function Wash({
   );
 }
 
-export default function AmbientBackground() {
+export default function AmbientBackground({ contained = false }: { contained?: boolean }) {
   const { scrollYProgress } = useScroll();
   const progress = useSpring(scrollYProgress, { stiffness: 30, damping: 20, mass: 1 });
 
   return (
-    <div aria-hidden="true" className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
+    <div
+      aria-hidden="true"
+      className={`pointer-events-none overflow-hidden ${contained ? 'absolute inset-0' : 'fixed inset-0 -z-10'}`}
+    >
       <Wash
         progress={progress}
         color="rgba(255, 230, 108, 0.09)"
