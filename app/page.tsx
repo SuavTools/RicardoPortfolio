@@ -4,7 +4,7 @@ import { useState, useSyncExternalStore } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import IntroGate from './components/IntroGate';
 import BespokeNavbar from './components/BespokeNavbar';
-import HeroSection from './components/HeroSection';
+import PassionsScroller from './components/PassionsScroller';
 import AsymmetricPortfolio from './components/AsymmetricPortfolio';
 import AboutSection from './components/AboutSection';
 
@@ -33,7 +33,7 @@ export default function Home() {
   };
 
   return (
-    <main className="bg-zinc-950 overflow-x-hidden antialiased selection:bg-brand-yellow selection:text-zinc-950 relative">
+    <main className="bg-zinc-950 overflow-x-clip antialiased selection:bg-brand-yellow selection:text-zinc-950 relative">
       {/* Cinematic Entry Gate Overlay Window */}
       <AnimatePresence mode="wait">
         {isUnlocked === false && (
@@ -47,8 +47,7 @@ export default function Home() {
           {/* HUD Navigation Panel overlay */}
           <BespokeNavbar />
 
-          {/* Intro Identity Statements */}
-          <HeroSection />
+          <PassionsScroller linkTo="#projects" />
 
           {/* Full-Width Row Index Cases */}
           <AsymmetricPortfolio />
