@@ -6,8 +6,13 @@ import { motion, useScroll, useTransform } from 'framer-motion';
 type AboutMedia = { url: string; type: 'video' | 'image' };
 
 // Edit these freely. Images come from the "About" folder in Vercel Blob,
-// matched to panels in filename order (01.jpg goes to the first panel, etc).
+// matched to panels in filename order (01.jpg goes to the first panel, the intro).
 const PASSIONS = [
+  {
+    title: "Hi, I'm Ricardo",
+    blurb:
+      "A multidisciplinary graphic designer working across static, motion and digital. I'm always picking up new skills, and I love blending design and motion into the interfaces people actually use.\n\nI design with the user journey and strategy in mind, thinking past the screen to how people interact with things. Off the screen, I build electrical gadgets by hand. When I say I tinker, I mean it. I just love making things exist in the real world.",
+  },
   {
     title: 'Key art',
     blurb: 'Show art, posters and campaign layouts. Finding the one image and the right type to sell a whole show.',
@@ -62,7 +67,11 @@ function PanelText({ index, title, blurb }: { index: number; title: string; blur
       <h2 className="font-sans text-4xl sm:text-6xl md:text-7xl font-black tracking-tighter uppercase leading-[0.9] text-zinc-50">
         {title}
       </h2>
-      <p className="font-sans text-base md:text-lg text-zinc-400 leading-relaxed">{blurb}</p>
+      {blurb.split('\n\n').map((para) => (
+        <p key={para.slice(0, 24)} className="font-sans text-base md:text-lg text-zinc-400 leading-relaxed">
+          {para}
+        </p>
+      ))}
     </div>
   );
 }
