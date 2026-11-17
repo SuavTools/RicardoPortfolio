@@ -6,7 +6,8 @@ import IntroGate from './components/IntroGate';
 import BespokeNavbar from './components/BespokeNavbar';
 import HeroSection from './components/HeroSection';
 import AsymmetricPortfolio from './components/AsymmetricPortfolio';
-import AboutSection from './components/AboutSection'; // Load the narrative component
+import AboutSection from './components/AboutSection';
+import SiteFooter from './components/SiteFooter';
 
 export default function Home() {
   const [isUnlocked, setIsUnlocked] = useState(false);
@@ -34,6 +35,8 @@ export default function Home() {
 
           {/* Deep Asymmetric Profile Narrative Column */}
           <AboutSection />
+
+          <SiteFooter />
         </>
       )}
     </main>
